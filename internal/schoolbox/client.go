@@ -108,7 +108,7 @@ func (c *Client) send(ctx context.Context, path string, query url.Values, accept
 		return nil, fmt.Errorf("GET %s: %w", path, err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		return nil, newAPIError(path, resp)
 	}
 	return resp, nil
@@ -120,7 +120,7 @@ func get[T any](ctx context.Context, c *Client, path string, query url.Values) (
 	if err != nil {
 		return v, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if err := json.UnmarshalRead(resp.Body, &v); err != nil {
 		return v, fmt.Errorf("GET %s: decode: %w", path, err)
 	}

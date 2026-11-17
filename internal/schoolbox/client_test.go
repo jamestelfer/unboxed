@@ -170,7 +170,10 @@ func TestFeedKeepsUnmodelledKindsRaw(t *testing.T) {
 func TestFeedStopsFetchingWhenCallerBreaks(t *testing.T) {
 	c, doer := newTestClient(t, feedRoutes())
 
-	for range c.Feed(context.Background(), 201) {
+	for _, err := range c.Feed(context.Background(), 201) {
+		if err != nil {
+			t.Fatal(err)
+		}
 		break
 	}
 

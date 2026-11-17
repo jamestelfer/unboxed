@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+# Names the archives, cask, and Nix package. Without it, goreleaser uses the
+# repository name.
+project_name: unboxed
+
+builds:
+  - id: release
+    binary: unboxed
+    main: ./cmd/cli
+    flags:
+      - "-trimpath"
+    ldflags:
+      - "-w -s"
+      - "-X main.version={{.Version}}"
+      - "-X main.commit={{.Commit}}"
+      - "-X main.date={{.Date}}"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+# The release workflow attests every file listed here. Keep the name stable:
+# the workflow reads dist/checksums.txt.
+checksum:
+  name_template: "checksums.txt"
+
+archives:
+  - id: archives
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+release:
+  # The shared pipeline requires the release to stay a draft that goreleaser
+  # fills in place: release-please creates the draft, attestation runs, then the
+  # wrapper publishes. Nothing downloadable exists without provenance behind it.
+  draft: true
+  # release-please creates the draft, but the tag is pushed separately so the
+  # draft has no published tag association. goreleaser's default lookup
+  # (GetReleaseByTag) cannot see draft releases and would create a duplicate;
+  # use_existing_draft makes it locate the draft by name and fill it instead.
+  use_existing_draft: true
+  # Lets a re-run replace assets an earlier run uploaded, instead of failing
+  # with HTTP 422 on the first existing asset.
+  replace_existing_artifacts: true
+  mode: keep-existing # keep the release-please title and notes
+  prerelease: auto
+
+homebrew_casks:
+  - name: unboxed
+    repository:
+      owner: jamestelfer
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_GITHUB_TOKEN }}" # set by the release workflow
+    # Leave the committer unset, so GitHub signs the commit as the token's App.
+    commit_author:
+      use_github_app_token: true
+    # prerelease: auto marks the release only. This stops the cask being
+    # pushed for a prerelease tag.
+    skip_upload: auto
+    homepage: "https://github.com/jamestelfer/unboxed"
+    description: "Connect to Schoolbox with your AI agents via MCP"
+    # Clear the macOS quarantine attribute so the binary runs without a
+    # Gatekeeper prompt. hooks.post.install would emit the deprecated
+    # `postflight` stanza, so custom_block carries `postflight_steps` until
+    # goreleaser ships hooks.post.install_steps (goreleaser/goreleaser#6873).
+    # `{{ "{{staged_path}}" }}` renders as Homebrew's `{{staged_path}}` token.
+    custom_block: |
+      postflight_steps do
+        on_macos do
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ "{{staged_path}}" }}/unboxed"]
+        end
+      end
+
+nix:
+  - name: unboxed
+    repository:
+      owner: jamestelfer
+      name: nixpkgs
+      token: "{{ .Env.NIX_GITHUB_TOKEN }}" # set by the release workflow
+    # Leave the committer unset, so GitHub signs the commit as the token's App.
+    commit_author:
+      use_github_app_token: true
+    skip_upload: auto # no recipe for prerelease tags
+    homepage: "https://github.com/jamestelfer/unboxed"
+    description: "Connect to Schoolbox with your AI agents via MCP"
+    license: "asl20"
+    # No main_program or formatter: binst 0.12.0 rejects both.

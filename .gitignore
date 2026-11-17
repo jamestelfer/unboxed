@@ -1,2 +1,5 @@
+dist/
+.claude/settings.local.json
+.envrc.private
 .env.local
 probe-out/

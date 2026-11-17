@@ -41,7 +41,7 @@ func (c *Client) CurrentUserID(ctx context.Context) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 4<<20))
 	if err != nil {
 		return 0, fmt.Errorf("GET /: %w", err)
