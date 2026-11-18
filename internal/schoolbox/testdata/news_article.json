@@ -1,1 +1,63 @@
-{"article":{"id":29655,"title":"Athletics carnival","blurb":"Details for Friday","body":"<p>Bring a hat.</p>","sticky":false,"author":{"id":301,"externalId":"8001","title":"Ms","firstname":"Terry","preferredName":null,"givenName":"Terry","lastname":"Teacher","fullName":"Ms Terry Teacher","role":{"id":3,"type":null,"name":null,"student":false,"staff":true,"parent":false,"guest":false},"_links":{"profile":{"href":"/search/user/301","auth":null},"avatar":{"href":"/portrait.php?id=301","auth":null}}},"featureImage":null,"publishAt":"2026-11-14T08:00:00+11:00","topics":[],"status":"Published","statusDate":"2026-11-14T08:00:00+11:00","attachedFiles":[],"_links":{"self":{"href":"/news/29655","auth":null}}},"isSavedForLater":false}
+{
+  "article": {
+    "id": 29655,
+    "title": "Athletics carnival",
+    "blurb": "Details for Friday",
+    "body": "<p>Bring a hat.</p>",
+    "sticky": false,
+    "author": {
+      "id": 301,
+      "externalId": "8001",
+      "title": "Ms",
+      "firstname": "Terry",
+      "preferredName": null,
+      "givenName": "Terry",
+      "lastname": "Teacher",
+      "fullName": "Ms Terry Teacher",
+      "role": {
+        "id": 3,
+        "type": null,
+        "name": null,
+        "student": false,
+        "staff": true,
+        "parent": false,
+        "guest": false
+      },
+      "_links": {
+        "profile": {
+          "href": "/search/user/301",
+          "auth": null
+        },
+        "avatar": {
+          "href": "/portrait.php?id=301",
+          "auth": null
+        }
+      }
+    },
+    "featureImage": null,
+    "publishAt": "2026-11-14T08:00:00+11:00",
+    "topics": [],
+    "status": "Published",
+    "statusDate": "2026-11-14T08:00:00+11:00",
+    "attachedFiles": [
+      {
+        "name": "Exam timetable.pdf",
+        "hash": "12ab34cd",
+        "mime": "application/pdf",
+        "type": "document",
+        "size": 2048,
+        "_links": {
+          "fetch": "/storage/fetch.php?hash=12ab34cd",
+          "icon": "/static/images/mime/application-pdf.svg"
+        }
+      }
+    ],
+    "_links": {
+      "self": {
+        "href": "/news/29655",
+        "auth": null
+      }
+    }
+  },
+  "isSavedForLater": false
+}

@@ -35,6 +35,8 @@ func mustLoad(name string) *time.Location {
 // goroutine to assert rather than failing directly.
 type fixtures struct {
 	routes map[string]string
+	// raw answers keys that need headers a fixture file cannot carry.
+	raw map[string]func() *http.Response
 
 	mu       sync.Mutex
 	requests []string
@@ -49,6 +51,9 @@ func (f *fixtures) Do(req *http.Request) (*http.Response, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.requests = append(f.requests, key)
+	if respond, ok := f.raw[key]; ok {
+		return respond(), nil
+	}
 	name, ok := f.routes[key]
 	if !ok {
 		f.problems = append(f.problems, "unexpected request "+key)
@@ -251,4 +256,93 @@ func TestHTMLToText(t *testing.T) {
 	} {
 		assert.Equal(t, want, htmlToText(in), "input %q", in)
 	}
+}
+
+func withFile(t *testing.T, contentType, body string) (*mcp.ClientSession, *fixtures) {
+	t.Helper()
+	s, fx := connect(t, map[string]string{"/news/29655": "news_article.json"})
+	fx.raw = map[string]func() *http.Response{
+		"/api/session": func() *http.Response {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Set-Cookie": {"PHPSESSID=s1; Path=/"}},
+				Body:       io.NopCloser(bytes.NewReader([]byte(`{"id":101}`))),
+			}
+		},
+		"/storage/fetch.php?hash=12ab34cd": func() *http.Response {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Content-Type": {contentType}},
+				Body:       io.NopCloser(bytes.NewReader([]byte(body))),
+			}
+		},
+	}
+	return s, fx
+}
+
+func TestGetArticleListsAttachments(t *testing.T) {
+	s, _ := connect(t, map[string]string{"/news/29655": "news_article.json"})
+
+	var out articleOut
+	mustCall(t, s, "get_article", map[string]any{"id": 29655}, &out)
+
+	assert.Equal(t, []Attachment{{Name: "Exam timetable.pdf", Mime: "application/pdf", Size: 2048}}, out.Attachments)
+}
+
+func TestGetAttachmentReturnsContentByType(t *testing.T) {
+	for name, tc := range map[string]struct {
+		contentType string
+		check       func(t *testing.T, c mcp.Content)
+	}{
+		"pdf as embedded resource": {"application/pdf", func(t *testing.T, c mcp.Content) {
+			res, ok := c.(*mcp.EmbeddedResource)
+			require.True(t, ok, "content is %T", c)
+			assert.Equal(t, "application/pdf", res.Resource.MIMEType)
+			assert.Equal(t, "https://school.example/storage/fetch.php?hash=12ab34cd", res.Resource.URI)
+			assert.Equal(t, []byte("%PDF-1.7"), res.Resource.Blob)
+		}},
+		"image as image": {"image/png", func(t *testing.T, c mcp.Content) {
+			img, ok := c.(*mcp.ImageContent)
+			require.True(t, ok, "content is %T", c)
+			assert.Equal(t, "image/png", img.MIMEType)
+			assert.Equal(t, []byte("%PDF-1.7"), img.Data)
+		}},
+		"text as text": {"text/plain; charset=utf-8", func(t *testing.T, c mcp.Content) {
+			txt, ok := c.(*mcp.TextContent)
+			require.True(t, ok, "content is %T", c)
+			assert.Equal(t, "%PDF-1.7", txt.Text)
+		}},
+		"octet-stream falls back to listed type": {"application/octet-stream", func(t *testing.T, c mcp.Content) {
+			res, ok := c.(*mcp.EmbeddedResource)
+			require.True(t, ok, "content is %T", c)
+			assert.Equal(t, "application/pdf", res.Resource.MIMEType)
+		}},
+	} {
+		t.Run(name, func(t *testing.T) {
+			s, fx := withFile(t, tc.contentType, "%PDF-1.7")
+
+			res, err := s.CallTool(t.Context(), &mcp.CallToolParams{
+				Name:      "get_attachment",
+				Arguments: map[string]any{"article_id": 29655, "name": "Exam timetable.pdf"},
+			})
+
+			require.NoError(t, err)
+			require.False(t, res.IsError, "%+v", res.Content)
+			require.Len(t, res.Content, 2)
+			summary, ok := res.Content[0].(*mcp.TextContent)
+			require.True(t, ok)
+			assert.Contains(t, summary.Text, "Exam timetable.pdf")
+			tc.check(t, res.Content[1])
+			assert.Contains(t, fx.requests, "/api/session")
+		})
+	}
+}
+
+func TestGetAttachmentOnlyFetchesListedFiles(t *testing.T) {
+	s, fx := withFile(t, "application/pdf", "x")
+
+	msg := call(t, s, "get_attachment", map[string]any{"article_id": 29655, "name": "secret.pdf"}, nil)
+
+	assert.Contains(t, msg, `choose one of: "Exam timetable.pdf"`)
+	assert.Equal(t, "/news/29655", fx.lastRequest(), "no download for an unlisted name")
 }

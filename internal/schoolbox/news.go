@@ -28,14 +28,15 @@ type ArticleSummary struct {
 }
 
 type Article struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Blurb     string    `json:"blurb"`
-	Body      string    `json:"body"`
-	Sticky    bool      `json:"sticky"`
-	Author    Person    `json:"author"`
-	Status    string    `json:"status"`
-	PublishAt time.Time `json:"publishAt"`
+	ID            int       `json:"id"`
+	Title         string    `json:"title"`
+	Blurb         string    `json:"blurb"`
+	Body          string    `json:"body"`
+	Sticky        bool      `json:"sticky"`
+	Author        Person    `json:"author"`
+	Status        string    `json:"status"`
+	PublishAt     time.Time `json:"publishAt"`
+	AttachedFiles []File    `json:"attachedFiles"`
 }
 
 // News lists articles aimed at the current user, optionally limited to a topic slug.

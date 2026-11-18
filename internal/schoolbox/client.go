@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -23,6 +24,10 @@ type Client struct {
 	baseURL *url.URL
 	token   string
 	http    Doer
+
+	// Session cookies for endpoints that ignore the bearer token; see Download.
+	mu      sync.Mutex
+	cookies []*http.Cookie
 }
 
 type Option func(*Client)
@@ -45,7 +50,12 @@ func New(baseURL, token string, opts ...Option) (*Client, error) {
 	c := &Client{
 		baseURL: u,
 		token:   token,
-		http:    &http.Client{Timeout: 30 * time.Second},
+		http: &http.Client{
+			Timeout: 30 * time.Second,
+			// API endpoints answer directly. A redirect means the login page,
+			// which Download needs to see rather than follow.
+			CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
+		},
 	}
 	for _, opt := range opts {
 		opt(c)

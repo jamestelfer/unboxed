@@ -7,11 +7,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	gomime "mime"
 	"net/url"
 	"slices"
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -95,9 +97,16 @@ func New(cfg Config) (*mcp.Server, error) {
 	}, s.listNews)
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "get_article",
-		Description: "Read one news article in full, as plain text.",
+		Description: "Read one news article in full, as plain text, with the names of any attached files.",
 		Annotations: readOnly,
 	}, s.getArticle)
+	mcp.AddTool(srv, &mcp.Tool{
+		Name: "get_attachment",
+		Description: "Download a file attached to a news article, such as a timetable or permission form. " +
+			"Images return as image content, text as text, and other files (PDF, Word) as an embedded resource. " +
+			"Files over 10 MB are refused.",
+		Annotations: readOnly,
+	}, s.getAttachment)
 	return srv, nil
 }
 
@@ -499,11 +508,18 @@ type articleArgs struct {
 }
 
 type articleOut struct {
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Published string `json:"published"`
-	Body      string `json:"body"`
-	Link      string `json:"link"`
+	Title       string       `json:"title"`
+	Author      string       `json:"author"`
+	Published   string       `json:"published"`
+	Body        string       `json:"body"`
+	Link        string       `json:"link"`
+	Attachments []Attachment `json:"attachments,omitempty"`
+}
+
+type Attachment struct {
+	Name string `json:"name"`
+	Mime string `json:"mime"`
+	Size int64  `json:"size"`
 }
 
 func (s *service) getArticle(ctx context.Context, _ *mcp.CallToolRequest, a articleArgs) (*mcp.CallToolResult, articleOut, error) {
@@ -511,11 +527,70 @@ func (s *service) getArticle(ctx context.Context, _ *mcp.CallToolRequest, a arti
 	if err != nil {
 		return nil, articleOut{}, fmt.Errorf("article %d: %w", a.ID, err)
 	}
-	return nil, articleOut{
+	out := articleOut{
 		Title:     art.Title,
 		Author:    art.Author.FullName,
 		Published: art.PublishAt.In(s.now().Location()).Format(time.DateOnly),
 		Body:      htmlToText(art.Body),
 		Link:      s.link(fmt.Sprintf("/news/%d", art.ID)),
-	}, nil
+	}
+	for i := range art.AttachedFiles {
+		f := &art.AttachedFiles[i]
+		out.Attachments = append(out.Attachments, Attachment{Name: f.Name, Mime: f.Mime, Size: f.Size})
+	}
+	return nil, out, nil
+}
+
+const maxAttachmentBytes = 10 << 20
+
+type attachmentArgs struct {
+	ArticleID int    `json:"article_id" jsonschema:"article id from list_news"`
+	Name      string `json:"name" jsonschema:"attachment name exactly as get_article lists it"`
+}
+
+// getAttachment only fetches files the article lists, so the tool cannot be
+// pointed at arbitrary storage links.
+func (s *service) getAttachment(ctx context.Context, _ *mcp.CallToolRequest, a attachmentArgs) (*mcp.CallToolResult, any, error) {
+	art, err := s.client.Article(ctx, a.ArticleID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("article %d: %w", a.ArticleID, err)
+	}
+	var file *schoolbox.File
+	names := make([]string, 0, len(art.AttachedFiles))
+	for i := range art.AttachedFiles {
+		names = append(names, fmt.Sprintf("%q", art.AttachedFiles[i].Name))
+		if art.AttachedFiles[i].Name == a.Name {
+			file = &art.AttachedFiles[i]
+		}
+	}
+	if file == nil {
+		if len(names) == 0 {
+			return nil, nil, fmt.Errorf("article %d has no attachments", a.ArticleID)
+		}
+		return nil, nil, fmt.Errorf("article %d has no attachment %q; choose one of: %s", a.ArticleID, a.Name, strings.Join(names, ", "))
+	}
+	if file.Size > maxAttachmentBytes {
+		return nil, nil, fmt.Errorf("%q is %d bytes, over the %d byte limit", file.Name, file.Size, maxAttachmentBytes)
+	}
+	body, contentType, err := s.client.Download(ctx, file.Links.Fetch, maxAttachmentBytes)
+	if err != nil {
+		return nil, nil, fmt.Errorf("download %q: %w", file.Name, err)
+	}
+	mime := file.Mime
+	if mt, _, err := gomime.ParseMediaType(contentType); err == nil && mt != "application/octet-stream" {
+		mime = mt
+	}
+	summary := &mcp.TextContent{Text: fmt.Sprintf("%s (%s, %d bytes) from article %d", file.Name, mime, len(body), a.ArticleID)}
+	var content mcp.Content
+	switch {
+	case strings.HasPrefix(mime, "image/"):
+		content = &mcp.ImageContent{Data: body, MIMEType: mime}
+	case strings.HasPrefix(mime, "text/") && utf8.Valid(body):
+		content = &mcp.TextContent{Text: string(body)}
+	default:
+		content = &mcp.EmbeddedResource{Resource: &mcp.ResourceContents{
+			URI: s.link(file.Links.Fetch), MIMEType: mime, Blob: body,
+		}}
+	}
+	return &mcp.CallToolResult{Content: []mcp.Content{summary, content}}, nil, nil
 }
