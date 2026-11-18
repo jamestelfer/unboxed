@@ -100,8 +100,13 @@ func New(cfg Config) (*mcp.Server, error) {
 		Annotations: readOnly,
 	}, s.gradeStats)
 	mcp.AddTool(srv, &mcp.Tool{
+		Name:        "list_news_topics",
+		Description: "List the school's news topics in the school's order, with the slug list_news accepts.",
+		Annotations: readOnly,
+	}, s.listNewsTopics)
+	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "list_news",
-		Description: "List school news articles addressed to the parent, optionally limited to a topic slug.",
+		Description: "List school news articles addressed to the parent, with their topics, optionally limited to one topic from list_news_topics.",
 		Annotations: readOnly,
 	}, s.listNews)
 	mcp.AddTool(srv, &mcp.Tool{
@@ -545,17 +550,72 @@ func (s *service) feedback(ctx context.Context, studentID int, start, end time.T
 	return items, nil
 }
 
+type NewsTopic struct {
+	Name string `json:"name"`
+	Slug string `json:"slug"`
+}
+
+type topicsOut struct {
+	Topics []NewsTopic `json:"topics"`
+}
+
+func (s *service) listNewsTopics(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, topicsOut, error) {
+	topics, err := s.newsTopics(ctx)
+	if err != nil {
+		return nil, topicsOut{}, err
+	}
+	out := topicsOut{Topics: make([]NewsTopic, 0, len(topics))}
+	for _, t := range topics {
+		out.Topics = append(out.Topics, NewsTopic{Name: t.Name, Slug: t.Slug()})
+	}
+	return nil, out, nil
+}
+
+func (s *service) newsTopics(ctx context.Context) ([]schoolbox.Topic, error) {
+	topics, err := s.client.NewsTopics(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("news topics: %w", err)
+	}
+	slices.SortStableFunc(topics, func(x, y schoolbox.Topic) int { return cmp.Compare(x.Sequence, y.Sequence) })
+	return topics, nil
+}
+
+// resolveTopic matches a slug or name, ignoring case, against the school's topics.
+func (s *service) resolveTopic(ctx context.Context, want string) (schoolbox.Topic, error) {
+	topics, err := s.newsTopics(ctx)
+	if err != nil {
+		return schoolbox.Topic{}, err
+	}
+	slugs := make([]string, 0, len(topics))
+	for _, t := range topics {
+		if strings.EqualFold(t.Slug(), want) || strings.EqualFold(t.Name, want) {
+			return t, nil
+		}
+		slugs = append(slugs, t.Slug())
+	}
+	return schoolbox.Topic{}, fmt.Errorf("no news topic %q; choose one of: %s", want, strings.Join(slugs, ", "))
+}
+
+// hasTopic matches on slug or name, so a slug derived differently from the
+// server's still finds the topic by its name.
+func hasTopic(n *schoolbox.ArticleSummary, t schoolbox.Topic) bool {
+	return slices.ContainsFunc(n.Topics, func(at schoolbox.ArticleTopic) bool {
+		return at.Slug == t.Slug() || strings.EqualFold(at.Name, t.Name)
+	})
+}
+
 type newsArgs struct {
-	Topic string `json:"topic,omitempty" jsonschema:"optional topic slug"`
+	Topic string `json:"topic,omitempty" jsonschema:"optional topic slug or name from list_news_topics"`
 }
 
 type NewsItem struct {
-	ID        int    `json:"id"`
-	Title     string `json:"title"`
-	Blurb     string `json:"blurb,omitempty"`
-	Author    string `json:"author"`
-	Published string `json:"published"`
-	Unread    bool   `json:"unread,omitempty"`
+	ID        int      `json:"id"`
+	Title     string   `json:"title"`
+	Blurb     string   `json:"blurb,omitempty"`
+	Author    string   `json:"author"`
+	Published string   `json:"published"`
+	Unread    bool     `json:"unread,omitempty"`
+	Topics    []string `json:"topics,omitempty"`
 }
 
 type newsOut struct {
@@ -563,17 +623,33 @@ type newsOut struct {
 }
 
 func (s *service) listNews(ctx context.Context, _ *mcp.CallToolRequest, a newsArgs) (*mcp.CallToolResult, newsOut, error) {
-	list, err := s.client.News(ctx, a.Topic)
+	var topic *schoolbox.Topic
+	if a.Topic != "" {
+		t, err := s.resolveTopic(ctx, a.Topic)
+		if err != nil {
+			return nil, newsOut{}, err
+		}
+		topic = &t
+	}
+	list, err := s.client.News(ctx)
 	if err != nil {
 		return nil, newsOut{}, fmt.Errorf("news: %w", err)
 	}
 	out := newsOut{Articles: []NewsItem{}}
 	loc := s.now().Location()
-	for _, n := range list {
-		out.Articles = append(out.Articles, NewsItem{
+	for i := range list {
+		n := &list[i]
+		if topic != nil && !hasTopic(n, *topic) {
+			continue
+		}
+		item := NewsItem{
 			ID: n.ID, Title: n.Title, Blurb: htmlToText(n.Blurb), Author: n.Author.FullName,
 			Published: n.PublishAt.In(loc).Format(time.DateOnly), Unread: n.ViewedAt == nil,
-		})
+		}
+		for _, t := range n.Topics {
+			item.Topics = append(item.Topics, t.Name)
+		}
+		out.Articles = append(out.Articles, item)
 	}
 	return nil, out, nil
 }

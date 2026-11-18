@@ -2,15 +2,42 @@ package schoolbox
 
 import (
 	"context"
-	"net/url"
 	"strconv"
+	"strings"
 	"time"
+	"unicode"
 )
 
 type Topic struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Sequence int    `json:"sequence"`
+}
+
+// Slug derives the topic's machine name, which /news/topics does not report:
+// lower case, with each run of other characters replaced by a hyphen. It
+// matches every topic on 26.1.16, e.g. "Camps & Excursions" is "camps-excursions".
+func (t Topic) Slug() string {
+	var b strings.Builder
+	gap := false
+	for _, r := range strings.ToLower(t.Name) {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) {
+			gap = true
+			continue
+		}
+		if gap && b.Len() > 0 {
+			b.WriteByte('-')
+		}
+		gap = false
+		b.WriteRune(r)
+	}
+	return b.String()
+}
+
+// ArticleTopic is a topic as an article carries it, with its slug.
+type ArticleTopic struct {
+	Name string `json:"name"`
+	Slug string `json:"slug"`
 }
 
 type ArticleSummary struct {
@@ -21,10 +48,11 @@ type ArticleSummary struct {
 	Author struct {
 		FullName string `json:"fullname"`
 	} `json:"author"`
-	Status      string     `json:"status"`
-	PublishAt   time.Time  `json:"publishAt"`
-	Attachments int        `json:"attachments"`
-	ViewedAt    *time.Time `json:"viewedAt"`
+	Status      string         `json:"status"`
+	PublishAt   time.Time      `json:"publishAt"`
+	Attachments int            `json:"attachments"`
+	ViewedAt    *time.Time     `json:"viewedAt"`
+	Topics      []ArticleTopic `json:"topics"`
 }
 
 type Article struct {
@@ -39,13 +67,11 @@ type Article struct {
 	AttachedFiles []File    `json:"attachedFiles"`
 }
 
-// News lists articles aimed at the current user, optionally limited to a topic slug.
-func (c *Client) News(ctx context.Context, topic string) ([]ArticleSummary, error) {
-	q := url.Values{}
-	if topic != "" {
-		q.Set("topic", topic)
-	}
-	return get[[]ArticleSummary](ctx, c, "/news/lists/feed", q)
+// News lists articles aimed at the current user. The feed accepts a topic
+// parameter but, on 26.1.16, only validates it and still returns every
+// article, so callers filter on ArticleSummary.Topics instead.
+func (c *Client) News(ctx context.Context) ([]ArticleSummary, error) {
+	return get[[]ArticleSummary](ctx, c, "/news/lists/feed", nil)
 }
 
 func (c *Client) Article(ctx context.Context, id int) (Article, error) {
