@@ -75,6 +75,13 @@ func New(cfg Config) (*mcp.Server, error) {
 		Annotations: readOnly,
 	}, s.getDueWork)
 	mcp.AddTool(srv, &mcp.Tool{
+		Name: "list_awaiting_feedback",
+		Description: "List due work whose due date has passed but which has no mark or feedback in the evidence feed yet. " +
+			"It does not show whether the work was submitted: Schoolbox does not report submission status here. " +
+			"Defaults to the last 14 days, ending yesterday. Ranges are capped at 31 days.",
+		Annotations: readOnly,
+	}, s.listAwaitingFeedback)
+	mcp.AddTool(srv, &mcp.Tool{
 		Name: "list_marked_work",
 		Description: "List a student's marked work published between two dates, newest first, with the mark, " +
 			"subject, teacher and the teacher's full written comment as plain text. Completion marks such as " +
@@ -245,6 +252,8 @@ type Event struct {
 	Detail   string `json:"detail,omitempty"`
 	Done     bool   `json:"completed,omitempty"`
 	Link     string `json:"link,omitempty"`
+	// Due work only; matches assessmentId in list_marked_work.
+	AssessmentID int `json:"assessmentId,omitempty"`
 }
 
 type calendarOut struct {
@@ -270,14 +279,10 @@ func (s *service) calendar(ctx context.Context, a rangeArgs, days int, keep func
 	if err != nil {
 		return nil, calendarOut{}, err
 	}
-	if end.Sub(start) > maxCalendarDays*24*time.Hour+time.Hour {
-		return nil, calendarOut{}, fmt.Errorf("range is longer than %d days; split it into smaller requests", maxCalendarDays)
-	}
-	events, err := s.client.Calendar(ctx, student.ID, start, end)
+	events, err := s.events(ctx, student.ID, start, end)
 	if err != nil {
-		return nil, calendarOut{}, fmt.Errorf("calendar: %w", err)
+		return nil, calendarOut{}, err
 	}
-	slices.SortStableFunc(events, func(x, y schoolbox.Event) int { return x.Start.Compare(y.Start) })
 	out := calendarOut{Student: student.FullName, Period: periodOf(start, end), Events: []Event{}}
 	for i := range events {
 		e := &events[i]
@@ -286,6 +291,72 @@ func (s *service) calendar(ctx context.Context, a rangeArgs, days int, keep func
 		}
 		out.Events = append(out.Events, s.event(e))
 	}
+	return nil, out, nil
+}
+
+// events fetches a student's calendar in start order, refusing ranges that
+// Schoolbox would serve slowly or truncate.
+func (s *service) events(ctx context.Context, studentID int, start, end time.Time) ([]schoolbox.Event, error) {
+	// An hour of slack absorbs a daylight-saving change inside the range.
+	if end.Sub(start) > maxCalendarDays*24*time.Hour+time.Hour {
+		return nil, fmt.Errorf("range is longer than %d days; split it into smaller requests", maxCalendarDays)
+	}
+	events, err := s.client.Calendar(ctx, studentID, start, end)
+	if err != nil {
+		return nil, fmt.Errorf("calendar: %w", err)
+	}
+	slices.SortStableFunc(events, func(x, y schoolbox.Event) int { return x.Start.Compare(y.Start) })
+	return events, nil
+}
+
+type awaitingOut struct {
+	Student string  `json:"student"`
+	Period  period  `json:"period"`
+	Count   int     `json:"count"`
+	Items   []Event `json:"items"`
+}
+
+// feedbackLookback reaches back before the due-date range, because a teacher
+// can publish feedback before the due date.
+const feedbackLookback = maxCalendarDays
+
+func (s *service) listAwaitingFeedback(ctx context.Context, _ *mcp.CallToolRequest, a rangeArgs) (*mcp.CallToolResult, awaitingOut, error) {
+	student, err := s.resolveStudent(ctx, a.StudentID)
+	if err != nil {
+		return nil, awaitingOut{}, err
+	}
+	start, end, err := s.span(a, daysBefore(14), throughToday)
+	if err != nil {
+		return nil, awaitingOut{}, err
+	}
+	// Work due today can still be handed in, so the range stops at yesterday.
+	if today := truncateDay(s.now()); end.After(today) {
+		end = today
+	}
+	if !end.After(start) {
+		return nil, awaitingOut{}, errors.New("from must be before today")
+	}
+	events, err := s.events(ctx, student.ID, start, end)
+	if err != nil {
+		return nil, awaitingOut{}, err
+	}
+	marked, err := s.feedback(ctx, student.ID, start.AddDate(0, 0, -feedbackLookback), truncateDay(s.now()).AddDate(0, 0, 1))
+	if err != nil {
+		return nil, awaitingOut{}, err
+	}
+	seen := make(map[int]bool, len(marked))
+	for i := range marked {
+		seen[marked[i].AssessmentID] = true
+	}
+	out := awaitingOut{Student: student.FullName, Period: periodOf(start, end), Items: []Event{}}
+	for i := range events {
+		e := &events[i]
+		if !e.IsDueWork() || !e.Start.Before(end) || seen[e.AssessmentID] {
+			continue
+		}
+		out.Items = append(out.Items, s.event(e))
+	}
+	out.Count = len(out.Items)
 	return nil, out, nil
 }
 
@@ -306,6 +377,8 @@ func (s *service) event(e *schoolbox.Event) Event {
 		Detail:   htmlToText(e.Meta.Detail),
 		Done:     e.Meta.Completed,
 		Link:     s.link(e.Path),
+
+		AssessmentID: e.AssessmentID,
 	}
 	if !e.End.IsZero() {
 		out.End = e.End.In(loc).Format(layout)

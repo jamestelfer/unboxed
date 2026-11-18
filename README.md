@@ -43,13 +43,16 @@ Every tool is read-only.
 | `list_students` | The children linked to the account, with the `student_id` the other tools take |
 | `get_calendar` | Classes, events, excursions and due work between two dates. Defaults to the next 7 days |
 | `get_due_work` | Homework and assessments due between two dates. Defaults to the next 14 days |
+| `list_awaiting_feedback` | Past due work with no mark or feedback yet. Defaults to the last 14 days, ending yesterday |
 | `list_marked_work` | Marked work with the mark, subject, teacher and written feedback. Defaults to the last 14 days |
 | `grade_stats` | Mark statistics by subject and work type, with trend and grade tallies. Defaults to the current semester |
 | `list_news` | News articles addressed to the parent, optionally filtered by topic |
 | `get_article` | One news article as plain text, with the names of its attachments |
 | `get_attachment` | A file attached to a news article, up to 10 MB |
 
-Date ranges for the calendar and due work are capped at 31 days.
+Date ranges for the calendar, due work and awaiting feedback are capped at 31 days.
+
+`list_awaiting_feedback` cannot tell whether work was submitted. Schoolbox's calendar `completed` flag stays false even for marked work, so the tool relies on the absence of feedback instead.
 
 `grade_stats` separates completion statuses such as "Submitted" from numeric marks. Schoolbox reports descriptor grades (for example "C") as fixed stand-in percentages, so these are flagged rather than averaged as genuine marks.
 

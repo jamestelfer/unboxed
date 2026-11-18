@@ -228,15 +228,16 @@ func TestGetDueWorkFiltersCalendar(t *testing.T) {
 
 	require.Len(t, due.Events, 1)
 	assert.Equal(t, Event{
-		Kind:     "dueWork",
-		Title:    "3 - Persuasive essay",
-		Subject:  "9 English A (9EngA)",
-		WorkType: "Homework",
-		Start:    "2026-11-25",
-		AllDay:   true,
-		Type:     "Due Work",
-		Detail:   "Submit via the task page.",
-		Link:     "https://school.example/learning/assessments/9182/201?returnUrl=L2xlYXJuaW5n",
+		Kind:         "dueWork",
+		Title:        "3 - Persuasive essay",
+		Subject:      "9 English A (9EngA)",
+		WorkType:     "Homework",
+		Start:        "2026-11-25",
+		AllDay:       true,
+		Type:         "Due Work",
+		Detail:       "Submit via the task page.",
+		Link:         "https://school.example/learning/assessments/9182/201?returnUrl=L2xlYXJuaW5n",
+		AssessmentID: 9182,
 	}, due.Events[0])
 
 	var all calendarOut
@@ -246,6 +247,57 @@ func TestGetDueWorkFiltersCalendar(t *testing.T) {
 	assert.Equal(t, "class", all.Events[0].Kind)
 	assert.Equal(t, "schoolEvent", all.Events[2].Kind)
 	assert.Equal(t, "2026-11-27", all.Events[2].Start)
+}
+
+// pastRoutes serves due work for 3–16 November and the feed back past the
+// 31-day lookback before 3 November.
+func pastRoutes(from time.Time) map[string]string {
+	end := time.Date(2026, 11, 17, 0, 0, 0, 0, melbourne)
+	routes := map[string]string{
+		fmt.Sprintf("/calendar/ajax/full?end=%d&start=%d&userId=201", end.Unix(), from.Unix()): "calendar_past.json",
+	}
+	maps.Copy(routes, feedRoutes)
+	return routes
+}
+
+func TestListAwaitingFeedbackOmitsMarkedWork(t *testing.T) {
+	s, _ := connect(t, pastRoutes(time.Date(2026, 11, 3, 0, 0, 0, 0, melbourne)))
+
+	var out awaitingOut
+	mustCall(t, s, "list_awaiting_feedback", map[string]any{"student_id": 201}, &out)
+
+	assert.Equal(t, period{From: "2026-11-03", To: "2026-11-16"}, out.Period, "last 14 days, ending yesterday")
+	assert.Equal(t, 2, out.Count)
+	require.Len(t, out.Items, 2)
+	assert.Equal(t, Event{
+		Kind:         "dueWork",
+		Title:        "Lab report",
+		Subject:      "Year 9 Science",
+		WorkType:     "Assessment Task",
+		Start:        "2026-11-12",
+		AllDay:       true,
+		Type:         "Due Work",
+		Link:         "https://school.example/learning/assessments/1004/201",
+		AssessmentID: 1004,
+	}, out.Items[0])
+	assert.Equal(t, 1006, out.Items[1].AssessmentID)
+}
+
+func TestListAwaitingFeedbackEndsBeforeToday(t *testing.T) {
+	s, _ := connect(t, pastRoutes(time.Date(2026, 11, 3, 0, 0, 0, 0, melbourne)))
+
+	var out awaitingOut
+	mustCall(t, s, "list_awaiting_feedback", map[string]any{"student_id": 201, "from": "2026-11-03", "to": "2026-11-30"}, &out)
+
+	assert.Equal(t, "2026-11-16", out.Period.To, "work due today or later is not yet awaiting feedback")
+}
+
+func TestListAwaitingFeedbackRejectsFutureRange(t *testing.T) {
+	s, _ := connect(t, nil)
+
+	msg := call(t, s, "list_awaiting_feedback", map[string]any{"student_id": 201, "from": "2026-11-17"}, nil)
+
+	assert.Contains(t, msg, "before today")
 }
 
 func TestCalendarRejectsLongRanges(t *testing.T) {
