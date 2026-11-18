@@ -9,7 +9,8 @@ import (
 	"time"
 )
 
-// Run with: (. ./.envrc.private; go test -tags live -run Live ./internal/schoolbox)
+// Run with: go test -tags live -run Live ./internal/schoolbox
+// JWT and SCHOOLBOX_URL come from the environment, which direnv provides.
 // Logs counts only, never record contents.
 func TestLiveEndpointsDecode(t *testing.T) {
 	token, baseURL := os.Getenv("JWT"), os.Getenv("SCHOOLBOX_URL")
