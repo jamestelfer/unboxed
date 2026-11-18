@@ -18,7 +18,7 @@ build *args:
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p dist
-    env CGO_ENABLED=0 go build -trimpath -o dist/unboxed {{args}} ./cmd/cli
+    env CGO_ENABLED=0 go build -trimpath -o dist/unboxed {{args}} ./cmd/unboxed
 
 # Run linter
 lint:

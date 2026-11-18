@@ -53,7 +53,7 @@ Linux, macOS and Windows on `amd64` and `arm64` are equal targets, all tested in
 
 ## Project layout
 
-`cmd/cli/` holds the `main` package, built as the `unboxed` binary. Application logic grows into packages alongside it; `main` stays a thin layer over them.
+`cmd/unboxed/` holds the `main` package, built as the `unboxed` binary. Application logic grows into packages alongside it; `main` stays a thin layer over them.
 
 ## Commits and PR titles
 
