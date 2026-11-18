@@ -13,7 +13,12 @@ Nine pages were captured on Schoolbox 26.1.17 (raw copies in `probe-out/assess/`
 - The Grading block and the Submission History repeat the same feedback. The history adds the student's submissions and their files.
 - The Grading card verb varies: "Feedback by …" or "Resubmission required by …". An entry with no mark omits `[data-test="assessment-feedback-mark"]`.
 - Feedback timestamps are plain text only (`Nov 18, 2026 12:36pm`), in the school's local time.
-- Task files link to `/storage/fetch.php?hash=…&name=…`, the same store that `Client.Download` already handles.
+- Pages link three kinds of file:
+  - **Task files** are attached by the teacher and link to `/storage/fetch.php?hash=…&name=…`, the store `Client.Download` already handles. The page shows their size as text, such as `476.79 KB`. Three of the nine pages have one each: two Word documents of 106 KB and 477 KB, and a 940 B CSV.
+  - **Student submissions** link to `/learning/assessments/{aid}/{sid}/responses/{rid}/files/{fid}/download`. The page shows no size for them.
+  - **Annotated feedback** links to `/learning/kami/{id}`, a Kami viewer page rather than a file.
+- The one rubric seen is about 4.9 KB of JSON: 1 criterion, 7 indicators, 5 levels and 35 descriptors, with about 1.6 KB of descriptor text. Level names and descriptors contain HTML (`<p>…</p>`). As plain text the whole rubric is roughly 2 KB.
+- `student_id` must be the right child. The wrong child or the parent's own ID gets a `401`, and `0` gets a `404`. Leaving it off (`/learning/assessments/{aid}`) gets a `303` to the enrolled child's URL. The tool does not use that redirect, for the reasons in the tool contract.
 - The task description is `article.content`. The `id="ir-content"` attribute appears on only some pages.
 - Error pages share the chrome but have no `ul.meta` and show `h2.subheader` "Possible Reasons" or "Your Options".
 
@@ -52,17 +57,18 @@ Stability: **High** means the selector uses `data-test` hooks, `<time datetime>`
 | Work type | `ul.meta li:has(sbx-icon[name="due-work"]), ul.meta li:has(sbx-icon[name="task"])`, text | Low; the icon varies by type |
 | Submission status | `ul.meta li:has(sbx-icon[name="upload"])`, text; absent on upcoming homework | Low |
 | Description (HTML) | `article.content`, inner HTML via `html.Render` of children | Medium |
-| Task files | `ul.grid .card.attachment a[href^="/storage/fetch.php"]`: `title` = name, `p.meta` = size text | Medium |
+| Task files | `ul.grid .card.attachment a[href^="/storage/fetch.php"]`: `title` = name, `href` = link, `p.meta` = size text, `img[src^="/ajax/mime/"]` = MIME type | Medium |
 | Grading entries | `[data-test="assessment-feedback-summary"] ul.reply > li` | High |
 | · author and action | `.card p` (first text node): split "Feedback by X" / "Resubmission required by X" | Low |
 | · timestamp | `.card p.meta` → `ParseInLocation("Jan 2, 2006 3:04pm", …, loc)` | Low |
 | · mark | `[data-test="assessment-feedback-mark"] span`; optional | High |
 | · comment (HTML) | `blockquote` inner HTML; `article span.meta` "Comment not provided" means empty | Medium |
-| · annotated feedback files | `ul.information-list .card.attachment a` inside the entry | Medium |
+| · annotated feedback files | `ul.information-list .card.attachment a` inside the entry: `p` = label, `href` = link | Medium |
+| · Kami annotated feedback | `a[href^="/learning/kami/"]` inside the entry: label "Annotated Feedback"; link only, not a file | Low |
 | Rubric | `[data-test="assessment-feedback-summary"] rubric-readonly` attr `:rubric-marked-grids-payload` → JSON | High (shape may change) |
 | Mark scheme | same element, attr `:assessment-mark-scheme` → JSON (`mode` raw/letter, `conf`) | High (shape may change) |
 | Submission history | `[data-test="assessment-submission-history"]` sections: `ul.reply > li` are feedback entries, `ul.threaded .card p` "Submission by X" are submissions | High root, Low internals |
-| · submission files | `a[href*="/responses/"][href$="/download"]`: `title` = name | Medium |
+| · submission files | `a[href*="/responses/"][href$="/download"]`: `title` = name, `href` = link; no size on the page | Medium |
 
 Centralise every selector in one `var (…)` block in `internal/schoolbox/assessment.go`, each with a comment that names the Schoolbox version where it was observed. This follows the convention in `calendar.go`.
 
@@ -97,6 +103,12 @@ type assessmentArgs struct {
 }
 ```
 
+`student_id` is required, as in every other tool. It goes through `resolveStudent`, which allows leaving it out only when the parent has one child. The tool always fetches `/learning/assessments/{aid}/{sid}` directly. It does not use the `303` from the bare assessment URL to find the child, for three reasons:
+
+- Callers already have the student ID. Assessment IDs come from `list_marked_work` and `get_due_work`, which are per-student.
+- The redirect costs a second round trip and needs its own redirect handling, because the client turns redirects off.
+- It is unknown which child the redirect picks when siblings share an assessment.
+
 Output (JSON field names are final; omit empty fields with `omitempty`):
 
 ```go
@@ -130,10 +142,22 @@ type Feedback struct {
 	Files   []FileRef `json:"files,omitempty"`
 }
 
+type FileRef struct {
+	Name string `json:"name"`
+	// task, submission, annotation or kami.
+	Kind string `json:"kind"`
+	// Size as the page shows it ("476.79 KB"); empty for submissions and Kami links.
+	Size string `json:"size,omitempty"`
+	// Absolute URL for direct download in a browser signed in to Schoolbox.
+	URL string `json:"url"`
+	// False for Kami links, which are viewer pages rather than files.
+	Retrievable bool `json:"retrievable"`
+}
+
 type Rubric struct {
 	Title    string      `json:"title"`
 	Levels   []string    `json:"levels"`
-	Criteria []Criterion `json:"criteria"` // capability → indicators, each with descriptors and the selected one
+	Criteria []Criterion `json:"criteria"` // capability → indicators → every descriptor, with the selected one flagged
 	Mark     string      `json:"mark,omitempty"`
 }
 ```
@@ -143,7 +167,16 @@ Layering follows the existing split:
 - `internal/schoolbox` returns `AssessmentPage` with raw HTML strings (`DescriptionHTML`, `CommentHTML`), as `DueWorkFeedback.Comment` and `Article.Body` already do.
 - `internal/server` converts them with `htmlToText`. The HTML subtrees are serialised with `html.Render` so `htmlToText(string)` is reused unchanged.
 - Marks go through `grades.Parse(mark, nil, nil)` so percent, grade and status match `list_marked_work`.
-- Links pass through `s.link`. File links stay inside the tool output only as names and sizes. A later `get_assessment_file` tool can download them via `Client.Download` with the same allowlist rule as `get_attachment`.
+- Links pass through `s.link`, so every `url` is absolute.
+- Level names and descriptor text go through `htmlToText`. The rubric returns every descriptor, not only the selected one, because the full text is only about 2 KB.
+
+### Attachments
+
+`get_assessment` returns file references with name, kind, size and URL, never file content.
+
+- **Direct download.** Each `FileRef.url` is an absolute Schoolbox URL. It opens in a browser where the parent is signed in to Schoolbox. Without a session, Schoolbox redirects to its login page. That is fine: the URL is for the parent, not the server. The token never appears in it.
+- **Resource links.** Besides the structured output, the tool returns one `mcp.ResourceLink` content block per retrievable file, with `URI`, `Name`, `MIMEType` (when the page's mime icon gives it) and `Size` (when known). Clients that render resource links can offer the download. Clients that do not support them ignore the extra blocks and still have `url` in the structured output. Check the go-sdk docs on how a handler returns both its own `Content` and structured output.
+- **Retrieval through the MCP.** A new `get_assessment_file` tool takes `student_id`, `assessment_id` and `name`. It re-fetches the assessment page and matches `name` against the files listed there, the same allowlist rule as `get_attachment`, so the tool cannot be pointed at arbitrary links. It downloads through `Client.Download` (session cookie, 10 MB limit) and returns content the same way as `get_attachment`. Extract that content mapping into a shared helper instead of copying it. Kami links are not retrievable, and the tool says so.
 
 ## Phases
 
@@ -203,7 +236,21 @@ Fixture: the "Submitted" class-work page with a student file.
 
 Acceptance: the history snapshot lists the submission and the feedback; duplicates of `grading` are not collapsed. Verify: `just verify`.
 
-### Phase 7: discoverability
+### Phase 7: attachment retrieval and links
+
+- Return `mcp.ResourceLink` blocks from `get_assessment` for retrievable files.
+- Add `get_assessment_file` and the content helper shared with `get_attachment`.
+- Confirm against a live page that `Client.Download` fetches a submission file (`/responses/…/download`), not just `/storage/fetch.php`.
+
+Acceptance:
+- Asking for a name the page does not list errors with the list of valid names.
+- Asking for a Kami link errors with a clear message.
+- A fixture download returns a resource with the right MIME type.
+- `get_attachment` behaviour is unchanged, and its existing tests pass.
+
+Verify: `just verify`.
+
+### Phase 8: discoverability
 
 - Add `assessmentId` to due-work entries from `get_calendar` and `get_due_work`, parsed from `Event.Path` (`/learning/assessments/{aid}/{sid}?returnUrl=…`).
 - Update the tool descriptions and README.
@@ -223,12 +270,15 @@ Acceptance: a due-work item's `assessmentId` round-trips into `get_assessment`. 
   - Make the replacements consistent, so one teacher's name and ID map to the same substitute across files.
 - Check each committed fixture with a grep for the real surnames, the school name and the real hostname before committing.
 
+## TODO
+
+- Render the rubric as a Markdown table (indicators as rows, levels as columns, the selected descriptor marked) in addition to the structured `rubric` field. This is deferred until a marked rubric has been captured.
+
 ## Open questions
 
-1. Should `get_assessment` also fetch the task files' contents, or leave that to a separate `get_assessment_file` tool? The recommendation is a separate tool, reusing `Download` and the listed-files allowlist.
-2. Should the rubric include every descriptor's text, or only the selected one per indicator? Full text is verbose: 7 indicators × 5 descriptors on the observed rubric.
-3. No captured page has a rubric with selections or a non-null `humanReadableMark`. The mapping is inferred from field names until a marked rubric is found.
-4. Is `student_id` needed in the path for the parent's own view? `/learning/assessments/{aid}` alone was not probed.
+1. No captured page has a rubric with selections or a non-null `humanReadableMark`. The mapping is inferred from field names until a marked rubric is found.
+2. It is unverified whether submission-file links download with the session cookie the way `/storage/fetch.php` links do (Phase 7 checks this).
+3. It is unverified whether MCP clients in use render `ResourceLink` blocks. The structured `url` field covers clients that do not.
 
 ## Replan triggers
 
