@@ -14,25 +14,25 @@ import (
 )
 
 // mcpCommand serves the read-only Schoolbox tools over stdio. Configuration is
-// environment only: JWT is a Schoolbox bearer token, SCHOOLBOX_URL the site root.
+// environment only: SCHOOLBOX_TOKEN is a Schoolbox bearer token, SCHOOLBOX_URL the site root.
 func mcpCommand() *cli.Command {
 	return &cli.Command{
 		Name:      "mcp",
-		Usage:     "serve Schoolbox tools to an MCP client over stdio (reads JWT and SCHOOLBOX_URL)",
+		Usage:     "serve Schoolbox tools to an MCP client over stdio (reads SCHOOLBOX_TOKEN and SCHOOLBOX_URL)",
 		ArgsUsage: " ",
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			if cmd.Args().Present() {
 				return cli.Exit(fmt.Sprintf("mcp takes no arguments, got %q", cmd.Args().Slice()), exitUsage)
 			}
-			token, baseURL := os.Getenv("JWT"), os.Getenv("SCHOOLBOX_URL")
+			token, baseURL := os.Getenv("SCHOOLBOX_TOKEN"), os.Getenv("SCHOOLBOX_URL")
 			if token == "" || baseURL == "" {
-				return cli.Exit("JWT and SCHOOLBOX_URL must be set", exitUsage)
+				return cli.Exit("SCHOOLBOX_TOKEN and SCHOOLBOX_URL must be set", exitUsage)
 			}
 			client, err := schoolbox.New(baseURL, token)
 			if err != nil {
 				return cli.Exit(err.Error(), exitUsage)
 			}
-			srv, err := server.New(server.Config{Client: client, BaseURL: baseURL})
+			srv, err := server.New(server.Config{Client: client, BaseURL: baseURL, Version: releaseVersion()})
 			if err != nil {
 				return err
 			}

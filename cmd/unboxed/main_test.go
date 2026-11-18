@@ -58,12 +58,12 @@ func TestRunRejectsUnknownFlagAsUsageError(t *testing.T) {
 }
 
 func TestRunMCPRequiresConfigAsUsageError(t *testing.T) {
-	t.Setenv("JWT", "")
+	t.Setenv("SCHOOLBOX_TOKEN", "")
 	t.Setenv("SCHOOLBOX_URL", "")
 	var stdout, stderr bytes.Buffer
 
 	code := run([]string{"unboxed", "mcp"}, &stdout, &stderr)
 
 	assert.Equal(t, exitUsage, code)
-	assert.Contains(t, stderr.String(), "JWT and SCHOOLBOX_URL must be set")
+	assert.Contains(t, stderr.String(), "SCHOOLBOX_TOKEN and SCHOOLBOX_URL must be set")
 }

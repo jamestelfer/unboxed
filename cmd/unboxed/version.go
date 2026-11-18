@@ -16,16 +16,26 @@ var (
 // print something useful for a plain `go build` too, where the ldflags above
 // are never applied.
 func buildVersion() string {
-	if version != "" {
-		v := version
-		if commit != "" {
-			v += " (" + commit
-			if date != "" {
-				v += ", " + date
-			}
-			v += ")"
+	if version == "" {
+		return releaseVersion()
+	}
+	v := version
+	if commit != "" {
+		v += " (" + commit
+		if date != "" {
+			v += ", " + date
 		}
-		return v
+		v += ")"
+	}
+	return v
+}
+
+// releaseVersion returns the bare version, without the commit and date that
+// buildVersion appends: the injected release version, or one derived from the
+// embedded build info. It is never empty.
+func releaseVersion() string {
+	if version != "" {
+		return version
 	}
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
