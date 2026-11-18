@@ -9,13 +9,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRunPrintsGreetingAndSucceeds(t *testing.T) {
+func TestRunWithoutCommandPrintsUsageAndSucceeds(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
 	code := run([]string{"unboxed"}, &stdout, &stderr)
 
 	require.Equal(t, exitOK, code, "stderr: %s", stderr.String())
-	assert.Equal(t, "hello from unboxed\n", stdout.String())
+	assert.Contains(t, stdout.String(), "USAGE:")
+	assert.Contains(t, stdout.String(), "mcp")
+	assert.NotContains(t, stdout.String(), "hello from unboxed")
+	assert.Empty(t, stderr.String())
 }
 
 func TestRunVersionFlagPrintsVersionAndSucceeds(t *testing.T) {
