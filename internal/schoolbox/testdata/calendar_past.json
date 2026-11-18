@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Year 9 English",
+    "start": "2026-11-05T09:00:00+11:00",
+    "end": "2026-11-05T09:50:00+11:00",
+    "allDay": false,
+    "className": "source5 type1 group23962",
+    "data": {
+      "meta": {"eventId": "TT-9ENGA-1", "detail": "", "location": "B12", "type": "", "completed": false},
+      "links": {"category": {"id": 23962, "name": "10 English 2A"}}
+    }
+  },
+  {
+    "title": "Year 9 English\nTask 1",
+    "start": "2026-11-05",
+    "end": "",
+    "allDay": true,
+    "className": "source2 type6 personal",
+    "data": {
+      "meta": {"eventId": 1001, "title": "Task 1", "detail": "", "type": "Due Work", "completed": false,
+        "folderName": "Year 9 English", "workType": "Assessment Task"},
+      "links": [],
+      "custom": {"modifyLink": false, "moreDetailsLink": "/learning/assessments/1001/201"}
+    }
+  },
+  {
+    "title": "Year 9 Science\nLab report",
+    "start": "2026-11-12",
+    "end": "",
+    "allDay": true,
+    "className": "source2 type6 personal",
+    "data": {
+      "meta": {"eventId": 1004, "title": "Lab report", "detail": "", "type": "Due Work", "completed": false,
+        "folderName": "Year 9 Science", "workType": "Assessment Task"},
+      "links": [],
+      "custom": {"modifyLink": false, "moreDetailsLink": "/learning/assessments/1004/201"}
+    }
+  },
+  {
+    "title": "Year 9 English\nReading log",
+    "start": "2026-11-16T15:30:00+11:00",
+    "end": "2026-11-16T15:30:00+11:00",
+    "allDay": false,
+    "className": "source2 type6 personal",
+    "data": {
+      "meta": {"eventId": 1006, "title": "Reading log", "detail": "", "type": "Due Work", "completed": false,
+        "folderName": "Year 9 English", "workType": "Homework"},
+      "links": [],
+      "custom": {"modifyLink": false, "moreDetailsLink": "/learning/assessments/1006/201"}
+    }
+  }
+]

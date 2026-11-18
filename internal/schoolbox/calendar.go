@@ -23,6 +23,9 @@ type Event struct {
 	Meta      EventMeta
 	// Site-relative link to the event or task page, when there is one.
 	Path string
+	// AssessmentID is set for due work: its event id is the assessment id
+	// that the evidence feed reports.
+	AssessmentID int
 }
 
 // Event sources, from the "sourceN" class. Observed on 26.1.16.
@@ -72,7 +75,7 @@ func (e *Event) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 		AllDay    bool   `json:"allDay"`
 		ClassName string `json:"className"`
 		Data      struct {
-			Meta EventMeta `json:"meta"`
+			Meta jsontext.Value `json:"meta"`
 			// An object for most events but [] for due work.
 			Links  jsontext.Value `json:"links"`
 			Custom struct {
@@ -82,6 +85,16 @@ func (e *Event) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	}
 	if err := json.UnmarshalDecode(dec, &wire); err != nil {
 		return err
+	}
+	var meta struct {
+		EventMeta
+		// A number for due work and school events, a string for timetable entries.
+		EventID jsontext.Value `json:"eventId"`
+	}
+	if len(wire.Data.Meta) > 0 {
+		if err := json.Unmarshal(wire.Data.Meta, &meta); err != nil {
+			return fmt.Errorf("event %q meta: %w", wire.Title, err)
+		}
 	}
 	start, err := parseCalendarTime(wire.Start)
 	if err != nil {
@@ -97,7 +110,13 @@ func (e *Event) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 		End:       end,
 		AllDay:    wire.AllDay,
 		ClassName: wire.ClassName,
-		Meta:      wire.Data.Meta,
+		Meta:      meta.EventMeta,
+	}
+	// Only due work's event id is an assessment id.
+	if e.IsDueWork() && meta.EventID.Kind() == '0' {
+		if err := json.Unmarshal(meta.EventID, &e.AssessmentID); err != nil {
+			return fmt.Errorf("event %q assessment id: %w", wire.Title, err)
+		}
 	}
 	if wire.Data.Links.Kind() == '{' {
 		var links struct {

@@ -33,6 +33,10 @@ func TestCalendarSendsUnixRangeAndDecodesEvents(t *testing.T) {
 	// Due work sends links as [], so the path comes from data.custom.
 	assert.Equal(t, "/learning/assessments/9182/201?returnUrl=L2xlYXJuaW5n", due.Path)
 	assert.True(t, due.End.IsZero())
+	assert.Equal(t, 9182, due.AssessmentID)
+	// Timetable entries carry string event ids such as "TT-9ENGA-1".
+	assert.Zero(t, class.AssessmentID)
+	assert.Zero(t, allDay.AssessmentID, "school events are not assessments")
 
 	assert.True(t, allDay.AllDay)
 	assert.Equal(t, "2026-11-27", allDay.Start.Format(time.DateOnly))
