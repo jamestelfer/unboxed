@@ -26,6 +26,23 @@ func TestBuildVersionReportsInjectedBuildMetadata(t *testing.T) {
 	}
 }
 
+// The MCP server reports the bare release version, without the commit and
+// date that `--version` appends.
+func TestReleaseVersionOmitsBuildMetadata(t *testing.T) {
+	t.Cleanup(restoreBuildVars(version, commit, date))
+	version, commit, date = "1.2.3", "abc1234", "2026-08-30T00:00:00Z"
+
+	assert.Equal(t, "1.2.3", releaseVersion())
+}
+
+func TestReleaseVersionFallsBackToBuildInfo(t *testing.T) {
+	t.Cleanup(restoreBuildVars(version, commit, date))
+	version, commit, date = "", "", ""
+
+	assert.NotEmpty(t, releaseVersion())
+	assert.Equal(t, buildVersion(), releaseVersion())
+}
+
 func restoreBuildVars(v, c, d string) func() {
 	return func() { version, commit, date = v, c, d }
 }

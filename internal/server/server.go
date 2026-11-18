@@ -27,6 +27,8 @@ type Config struct {
 	Client *schoolbox.Client
 	// BaseURL turns site-relative links into absolute ones.
 	BaseURL string
+	// Version is reported to MCP clients as the server version.
+	Version string
 	// Now defaults to time.Now; dates are interpreted in its location.
 	Now func() time.Time
 }
@@ -50,7 +52,7 @@ func New(cfg Config) (*mcp.Server, error) {
 	if s.now == nil {
 		s.now = time.Now
 	}
-	srv := mcp.NewServer(&mcp.Implementation{Name: "unboxed", Title: "Schoolbox (read-only)", Version: "0.1.0"}, &mcp.ServerOptions{
+	srv := mcp.NewServer(&mcp.Implementation{Name: "unboxed", Title: "Schoolbox (read-only)", Version: cfg.Version}, &mcp.ServerOptions{
 		Instructions: "Read-only access to Schoolbox for a parent. Call list_students first to map a child's name " +
 			"(or nickname) to a student_id. Dates are YYYY-MM-DD in the school's local time; ranges are inclusive.",
 	})

@@ -32,7 +32,7 @@ func mcpCommand() *cli.Command {
 			if err != nil {
 				return cli.Exit(err.Error(), exitUsage)
 			}
-			srv, err := server.New(server.Config{Client: client, BaseURL: baseURL})
+			srv, err := server.New(server.Config{Client: client, BaseURL: baseURL, Version: releaseVersion()})
 			if err != nil {
 				return err
 			}

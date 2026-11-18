@@ -82,6 +82,7 @@ func connect(t *testing.T, routes map[string]string) (*mcp.ClientSession, *fixtu
 	srv, err := New(Config{
 		Client:  client,
 		BaseURL: "https://school.example",
+		Version: "1.2.3",
 		Now:     func() time.Time { return time.Date(2026, 11, 17, 12, 0, 0, 0, melbourne) },
 	})
 	require.NoError(t, err)
@@ -126,6 +127,15 @@ func mustCall(t *testing.T, s *mcp.ClientSession, name string, args map[string]a
 var feedRoutes = map[string]string{
 	"/learning/evidenceFeed/user/201":                       "feed_page1.json",
 	"/learning/evidenceFeed/user/201?cursor=Y3Vyc29yLTI%3D": "feed_page2.json",
+}
+
+func TestServerReportsConfiguredVersion(t *testing.T) {
+	session, _ := connect(t, nil)
+
+	info := session.InitializeResult().ServerInfo
+	require.NotNil(t, info)
+	assert.Equal(t, "unboxed", info.Name)
+	assert.Equal(t, "1.2.3", info.Version)
 }
 
 func TestListStudents(t *testing.T) {
