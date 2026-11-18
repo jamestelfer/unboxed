@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "id": "29648",
+      "type": "news",
+      "typeTitle": "News",
+      "date": "2026-11-11T09:00:00+11:00",
+      "url": "/news/29648?ref=search",
+      "title": "Year 9 Camp update",
+      "meta": "Posted 6 days ago by Ms Terry Teacher",
+      "image": null,
+      "description": "...buses leave at <strong>8:30am</strong> from the front gate...",
+      "creator": {"id": 301, "title": "Ms", "firstName": "Terry", "lastName": "Teacher", "fullName": "Ms Terry Teacher"},
+      "context": [],
+      "icon": "news",
+      "_links": []
+    },
+    {
+      "id": "10209",
+      "type": "page.homepage",
+      "typeTitle": "Page",
+      "date": "2026-03-02T10:00:00+11:00",
+      "url": "/homepage/10209",
+      "title": "Camp packing list",
+      "meta": null,
+      "image": null,
+      "description": "",
+      "creator": null,
+      "context": [
+        {"id": 23096, "name": "Year 9", "title": "Year 9", "codes": [], "parent": {"id": 0}, "_links": {"view": "/homepage/23096"}},
+        {"id": 23097, "name": "Camps", "title": "Camps", "codes": [], "parent": {"id": 23096}, "_links": {"view": "/homepage/23097"}}
+      ],
+      "icon": "page",
+      "_links": []
+    }
+  ],
+  "metadata": {"count": 2, "cursor": {"current": null, "next": "Y3Vyc29yLTI="}}
+}

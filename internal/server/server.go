@@ -10,6 +10,7 @@ import (
 	gomime "mime"
 	"net/url"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -109,6 +110,13 @@ func New(cfg Config) (*mcp.Server, error) {
 		Description: "List school news articles addressed to the parent, with their topics, optionally limited to one topic from list_news_topics.",
 		Annotations: readOnly,
 	}, s.listNews)
+	mcp.AddTool(srv, &mcp.Tool{
+		Name: "search",
+		Description: "Search Schoolbox for a keyword, most relevant first: news, events, class and folder pages, files, " +
+			"and anything else the parent can open. Optionally limit to result types and a date range. " +
+			"News results carry an articleId for get_article. Returns 20 results unless limit (at most 50) says otherwise.",
+		Annotations: readOnly,
+	}, s.search)
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "get_article",
 		Description: "Read one news article in full, as plain text, with the names of any attached files.",
@@ -690,6 +698,113 @@ func (s *service) getArticle(ctx context.Context, _ *mcp.CallToolRequest, a arti
 		out.Attachments = append(out.Attachments, Attachment{Name: f.Name, Mime: f.Mime, Size: f.Size})
 	}
 	return nil, out, nil
+}
+
+const (
+	defaultSearchResults = 20
+	maxSearchResults     = 50
+)
+
+type searchArgs struct {
+	Query string   `json:"query" jsonschema:"keyword or phrase, at least 2 characters"`
+	Types []string `json:"types,omitempty" jsonschema:"optional result types, e.g. news, event, page, file, assessment, user.staff"`
+	From  string   `json:"from,omitempty" jsonschema:"optional first day, YYYY-MM-DD; its meaning varies by result type"`
+	To    string   `json:"to,omitempty" jsonschema:"optional last day, YYYY-MM-DD"`
+	Limit int      `json:"limit,omitempty" jsonschema:"maximum results, 1 to 50; default 20"`
+}
+
+type SearchHit struct {
+	Type  string `json:"type"`
+	Title string `json:"title"`
+	Date  string `json:"date,omitempty"`
+	// The folders the result sits in, e.g. "Year 9 / Camps".
+	Where     string `json:"where,omitempty"`
+	Meta      string `json:"meta,omitempty"`
+	Summary   string `json:"summary,omitempty"`
+	Link      string `json:"link,omitempty"`
+	ArticleID int    `json:"articleId,omitempty"`
+}
+
+type searchOut struct {
+	Query   string      `json:"query"`
+	Count   int         `json:"count"`
+	More    bool        `json:"more,omitempty"`
+	Results []SearchHit `json:"results"`
+}
+
+func (a searchArgs) filter() (schoolbox.SearchFilter, int, error) {
+	f := schoolbox.SearchFilter{Types: a.Types, From: a.From, To: a.To}
+	if utf8.RuneCountInString(strings.TrimSpace(a.Query)) < 2 {
+		return f, 0, errors.New("query must be at least 2 characters")
+	}
+	for _, t := range a.Types {
+		if !slices.Contains(schoolbox.SearchTypes, t) {
+			return f, 0, fmt.Errorf("unknown type %q; choose from: %s", t, strings.Join(schoolbox.SearchTypes, ", "))
+		}
+	}
+	for name, d := range map[string]string{"from": a.From, "to": a.To} {
+		if _, err := time.Parse(time.DateOnly, d); d != "" && err != nil {
+			return f, 0, fmt.Errorf("%s: want YYYY-MM-DD: %w", name, err)
+		}
+	}
+	limit := cmp.Or(a.Limit, defaultSearchResults)
+	if limit < 1 || limit > maxSearchResults {
+		return f, 0, fmt.Errorf("limit must be between 1 and %d", maxSearchResults)
+	}
+	return f, limit, nil
+}
+
+func (s *service) search(ctx context.Context, _ *mcp.CallToolRequest, a searchArgs) (*mcp.CallToolResult, searchOut, error) {
+	filter, limit, err := a.filter()
+	if err != nil {
+		return nil, searchOut{}, err
+	}
+	query := strings.TrimSpace(a.Query)
+	out := searchOut{Query: query, Results: []SearchHit{}}
+	for r, err := range s.client.Search(ctx, query, filter) {
+		if err != nil {
+			return nil, searchOut{}, fmt.Errorf("search: %w", err)
+		}
+		out.Results = append(out.Results, s.searchHit(&r))
+		// Stop without fetching another page, so More reports that results
+		// may continue rather than that they do.
+		if len(out.Results) == limit {
+			out.More = true
+			break
+		}
+	}
+	out.Count = len(out.Results)
+	return nil, out, nil
+}
+
+func (s *service) searchHit(r *schoolbox.SearchResult) SearchHit {
+	hit := SearchHit{
+		Type:    r.Type,
+		Title:   r.Title,
+		Meta:    r.Meta,
+		Summary: htmlToText(r.Description),
+	}
+	if !r.Date.IsZero() {
+		hit.Date = r.Date.In(s.now().Location()).Format(time.DateOnly)
+	}
+	where := make([]string, 0, len(r.Context))
+	for _, c := range r.Context {
+		where = append(where, c.Name)
+	}
+	hit.Where = strings.Join(where, " / ")
+	if r.URL != "" {
+		// Drop the ref=search tracking parameter.
+		if u, err := url.Parse(r.URL); err == nil {
+			q := u.Query()
+			q.Del("ref")
+			u.RawQuery = q.Encode()
+			hit.Link = s.link(u.String())
+		}
+	}
+	if r.Type == "news" {
+		hit.ArticleID, _ = strconv.Atoi(r.ID)
+	}
+	return hit
 }
 
 const maxAttachmentBytes = 10 << 20
