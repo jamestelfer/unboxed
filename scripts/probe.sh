@@ -8,6 +8,7 @@ set -euo pipefail
 readonly ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly OUT="${ROOT}/probe-out"
 readonly PAUSE_SECONDS=2
+readonly ENV_FILE="${ROOT}/.envrc.private"
 
 err() {
   echo "error: $*" >&2
@@ -17,9 +18,9 @@ load_token() {
   local name value
   set -a
   # shellcheck disable=SC1091
-  source "${ROOT}/.env.local"
+  source "${ENV_FILE}"
   set +a
-  # Variable name in .env.local is unknown to the script author; pick the first JWT-shaped value.
+  # Variable name in the env file is unknown to the script author; pick the first JWT-shaped value.
   while IFS= read -r name; do
     value="${!name-}"
     if [[ "${value}" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
@@ -27,9 +28,9 @@ load_token() {
       echo "using token from \$${name}"
       return 0
     fi
-  done < <(grep -oE '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "${ROOT}/.env.local" \
+  done < <(grep -oE '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "${ENV_FILE}" \
              | sed -E 's/^export +//; s/=$//')
-  err "no JWT-shaped value found in .env.local"
+  err "no JWT-shaped value found in ${ENV_FILE}"
   return 1
 }
 
