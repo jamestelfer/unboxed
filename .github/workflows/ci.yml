@@ -10,16 +10,11 @@ permissions:
 
 jobs:
   test:
-    # unboxed targets linux, darwin and windows equally — a change that only
-    # passes on one OS is not done. The matrix is the proof, so it is not
-    # allowed to fail fast: a Windows-only failure must still be visible
-    # alongside a green Linux run.
-    name: Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    # Tests run on Linux only. Releases still build for macOS and Windows, so
+    # the cross-platform rules in AGENTS.md apply without CI coverage.
+    # The name matches the required status check in the repository ruleset.
+    name: Test (ubuntu-latest)
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -44,7 +39,6 @@ jobs:
         run: just test
 
       - name: Run race detector
-        if: matrix.os == 'ubuntu-latest'
         run: go test -race ./...
 
   lint:
@@ -62,7 +56,7 @@ jobs:
           install_args: go just golangci-lint
 
       # .golangci.yaml carries no Go dependencies; it is here only to fork this
-      # key from the test matrix's, which would otherwise win the race to save.
+      # key from the test job's, which would otherwise win the race to save.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           cache-dependency-path: |

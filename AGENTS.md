@@ -49,7 +49,7 @@ Tool versions (Go, golangci-lint, goreleaser, just) are pinned in `mise.toml`; r
 
 ## Cross-platform rules
 
-Linux, macOS and Windows on `amd64` and `arm64` are equal targets, all tested in CI: use `path/filepath` for paths, keep filenames legal on Windows, build-tag anything POSIX-only, and keep `CGO_ENABLED=0`.
+Linux, macOS and Windows on `amd64` and `arm64` are equal release targets. CI tests on Linux only, so nothing catches a macOS- or Windows-only failure before release: use `path/filepath` for paths, keep filenames legal on Windows, build-tag anything POSIX-only, and keep `CGO_ENABLED=0`.
 
 ## Project layout
 
