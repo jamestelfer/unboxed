@@ -28,9 +28,8 @@ jobs:
       # policies instead of github.token/a PAT. Identity/scope are derived by
       # convention — nothing passed.
       token-source: octo-sts
-      # On by default and kept: GitHub Release, Homebrew, and Nix. The tap
+      # On by default and kept: GitHub Release, install.sh, Homebrew, and Nix. The tap
       # token is minted against the release-tap trust policy.
       disable-npm: true # no npm package published
       disable-docker-login: true # no container image published
-      disable-binstaller: true # no install.sh
     # No `secrets:` block: the octo-sts path is keyless.

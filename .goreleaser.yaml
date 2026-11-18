@@ -8,7 +8,7 @@ project_name: unboxed
 builds:
   - id: release
     binary: unboxed
-    main: ./cmd/cli
+    main: ./cmd/unboxed
     flags:
       - "-trimpath"
     ldflags:
