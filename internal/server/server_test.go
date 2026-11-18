@@ -342,6 +342,59 @@ func withFile(t *testing.T, contentType, body string) (*mcp.ClientSession, *fixt
 	return s, fx
 }
 
+var newsRoutes = map[string]string{
+	"/news/lists/feed": "news_feed.json",
+	"/news/topics":     "news_topics.json",
+}
+
+func TestListNewsTopicsInSchoolOrder(t *testing.T) {
+	s, _ := connect(t, newsRoutes)
+
+	var out topicsOut
+	mustCall(t, s, "list_news_topics", nil, &out)
+
+	assert.Equal(t, []NewsTopic{
+		{Name: "General", Slug: "general"},
+		{Name: "Sport", Slug: "sport"},
+		{Name: "Camps & Excursions", Slug: "camps-excursions"},
+	}, out.Topics)
+}
+
+func TestListNewsFiltersByTopicSlugOrName(t *testing.T) {
+	s, _ := connect(t, newsRoutes)
+	for topic, want := range map[string]int{"": 2, "sport": 29655, "General": 29700, "SPORT": 29655} {
+		t.Run(topic, func(t *testing.T) {
+			var out newsOut
+			mustCall(t, s, "list_news", map[string]any{"topic": topic}, &out)
+
+			if topic == "" {
+				assert.Len(t, out.Articles, want)
+				return
+			}
+			require.Len(t, out.Articles, 1)
+			assert.Equal(t, want, out.Articles[0].ID)
+		})
+	}
+}
+
+func TestListNewsReportsArticleTopics(t *testing.T) {
+	s, _ := connect(t, newsRoutes)
+
+	var out newsOut
+	mustCall(t, s, "list_news", nil, &out)
+
+	require.Len(t, out.Articles, 2)
+	assert.Equal(t, []string{"Sport"}, out.Articles[0].Topics)
+}
+
+func TestListNewsRejectsUnknownTopic(t *testing.T) {
+	s, _ := connect(t, newsRoutes)
+
+	msg := call(t, s, "list_news", map[string]any{"topic": "chess"}, nil)
+
+	assert.Contains(t, msg, `no news topic "chess"; choose one of: general, sport, camps-excursions`)
+}
+
 func TestGetArticleListsAttachments(t *testing.T) {
 	s, _ := connect(t, map[string]string{"/news/29655": "news_article.json"})
 

@@ -10,6 +10,9 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type route struct {
@@ -204,25 +207,36 @@ func TestFeedYieldsPageErrorAndStops(t *testing.T) {
 }
 
 func TestNewsAndArticle(t *testing.T) {
+	// The feed ignores ?topic= (it only validates the slug), so the client never sends it.
 	c, _ := newTestClient(t, map[string]route{
-		"/news/lists/feed?topic=sport": ok("news_feed.json"),
-		"/news/29655":                  ok("news_article.json"),
+		"/news/lists/feed": ok("news_feed.json"),
+		"/news/29655":      ok("news_article.json"),
 	})
 	ctx := context.Background()
 
-	list, err := c.News(ctx, "sport")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(list) != 1 || list[0].Author.FullName != "Ms Terry Teacher" || list[0].ViewedAt != nil || list[0].Attachments != 1 {
-		t.Errorf("list = %+v", list)
-	}
+	list, err := c.News(ctx)
+	require.NoError(t, err)
+	require.Len(t, list, 2)
+	assert.Equal(t, "Ms Terry Teacher", list[0].Author.FullName)
+	assert.Nil(t, list[0].ViewedAt)
+	assert.Equal(t, 1, list[0].Attachments)
+	assert.Equal(t, []ArticleTopic{{Name: "Sport", Slug: "sport"}}, list[0].Topics)
 
 	a, err := c.Article(ctx, list[0].ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if a.Body != "<p>Bring a hat.</p>" || a.Author.FullName != "Ms Terry Teacher" {
-		t.Errorf("article = %+v", a)
+	require.NoError(t, err)
+	assert.Equal(t, "<p>Bring a hat.</p>", a.Body)
+	assert.Equal(t, "Ms Terry Teacher", a.Author.FullName)
+}
+
+func TestTopicSlugMatchesSchoolbox(t *testing.T) {
+	// Observed on 26.1.16: each derived slug is accepted by /news/lists/feed?topic=.
+	for name, want := range map[string]string{
+		"Administration":     "administration",
+		"Camps & Excursions": "camps-excursions",
+		"PE & Health":        "pe-health",
+		"LOTE":               "lote",
+		"Performing Arts":    "performing-arts",
+	} {
+		assert.Equal(t, want, Topic{Name: name}.Slug(), "name %q", name)
 	}
 }

@@ -29,7 +29,7 @@ func TestLiveEndpointsDecode(t *testing.T) {
 	}
 	t.Logf("students: %d", len(me.Students))
 
-	news, err := c.News(ctx, "")
+	news, err := c.News(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
