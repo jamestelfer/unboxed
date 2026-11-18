@@ -45,8 +45,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 					fmt.Sprintf("unboxed takes no arguments, got %q", cmd.Args().Slice()),
 					exitUsage)
 			}
-			_, err := fmt.Fprintln(cmd.Writer, "hello from unboxed")
-			return err
+			// The root command does nothing itself: point at the subcommands.
+			return cli.ShowRootCommandHelp(cmd)
 		},
 		// A usage error is the operator's mistake, not a runtime failure, and
 		// gets its own exit code.
