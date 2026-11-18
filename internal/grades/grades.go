@@ -21,7 +21,7 @@ type Score struct {
 	Status string `json:"status,omitempty"`
 	// GradeBand is set when Percent is Schoolbox's stand-in for a descriptor
 	// grade (C becomes 70, B 85) rather than a score the student earned.
-	GradeBand bool `json:"gradeBand,omitempty"`
+	GradeBand bool `json:"gradeBand,omitzero"`
 }
 
 var (

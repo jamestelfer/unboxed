@@ -1,0 +1,1032 @@
+
+[TestAssessmentPages/assessment_full.html - 1]
+{
+ "DescriptionHTML": "<p>Choose one locally grown food and research how it reaches the market. Record your findings in the class notebook before the unit test.</p>",
+ "Due": "2026-10-02T23:59:00+10:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-11-04T12:36:00+11:00",
+   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+   "Files": [],
+   "Mark": "28 / 40",
+   "Teacher": "Mrs Robin Stone"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-11-04T12:36:00+11:00",
+    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+    "Files": [],
+    "Mark": "28 / 40",
+    "Teacher": "Mrs Robin Stone"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Mode": "raw",
+  "TotalMark": 40
+ },
+ "Rubrics": [],
+ "Subject": "9 Food Studies 2A (9Food2A)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [],
+ "Title": "Local Produce Research Task",
+ "Warnings": [],
+ "WorkType": "Assessment Task"
+}
+---
+
+[TestAssessmentPages/assessment_grade.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-10-19T23:59:00+11:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-10-27T14:50:00+11:00",
+   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+   "Files": [],
+   "Mark": "Above The Expected Standard (B)",
+   "Teacher": "Mr Lee Dunn"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-10-27T14:50:00+11:00",
+    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+    "Files": [],
+    "Mark": "Above The Expected Standard (B)",
+    "Teacher": "Mr Lee Dunn"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Bands": [
+   {
+    "caption": "Well Above The Expected Standard (A)",
+    "lowerBound": 90,
+    "rawGrade": 95
+   },
+   {
+    "caption": "Above The Expected Standard (B)",
+    "lowerBound": 80,
+    "rawGrade": 85
+   },
+   {
+    "caption": "At The Expected Standard (C)",
+    "lowerBound": 50,
+    "rawGrade": 70
+   },
+   {
+    "caption": "Below Standard (D)",
+    "lowerBound": 35,
+    "rawGrade": 40
+   },
+   {
+    "caption": "Well Below Standard (E)",
+    "lowerBound": 0,
+    "rawGrade": 20
+   }
+  ],
+  "Mode": "letter"
+ },
+ "Rubrics": [],
+ "Subject": "7 Mathematics B (7Math1B,7Math2B)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [],
+ "Title": "Measurement test",
+ "Warnings": [],
+ "WorkType": "Assessment Task"
+}
+---
+
+[TestAssessmentPages/assessment_not_submitted.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-08-12T08:00:00+10:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-10-11T23:33:00+11:00",
+   "CommentHTML": "",
+   "Files": [],
+   "Mark": "Not Submitted",
+   "Teacher": "Mr Chris Hale"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-10-11T23:33:00+11:00",
+    "CommentHTML": "",
+    "Files": [],
+    "Mark": "Not Submitted",
+    "Teacher": "Mr Chris Hale"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Bands": [
+   {
+    "caption": "A - Well above",
+    "lowerBound": 90,
+    "rawGrade": 95
+   },
+   {
+    "caption": "B - Above",
+    "lowerBound": 75,
+    "rawGrade": 82
+   },
+   {
+    "caption": "C - At expected level",
+    "lowerBound": 60,
+    "rawGrade": 67
+   },
+   {
+    "caption": "D - Below",
+    "lowerBound": 50,
+    "rawGrade": 55
+   },
+   {
+    "caption": "E - Well below",
+    "lowerBound": 0,
+    "rawGrade": 25
+   }
+  ],
+  "Mode": "letter"
+ },
+ "Rubrics": [],
+ "Subject": "7 English B (7Eng1B,7Eng2B)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [
+  {
+   "Kind": "task",
+   "Link": "/storage/fetch.php?hash=9d0f93789ca035b17a3b028dfa384fa3026e9e90&name=Week%205%20-%20Social%20Issues.docx",
+   "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "Name": "Week 5 - Social Issues.docx",
+   "Size": "106.14 KB"
+  }
+ ],
+ "Title": "T3 W5 - Homework",
+ "Warnings": [],
+ "WorkType": "Homework"
+}
+---
+
+[TestAssessmentPages/assessment_percent.html - 1]
+{
+ "DescriptionHTML": "<p>Ensure that you hand in the booklet prior to the exam.</p><p>Refer to the rubric on the backpage of the booklet with respect to the breakdown of the marking.</p>",
+ "Due": "2026-11-02T23:59:00+11:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-11-03T19:50:00+11:00",
+   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+   "Files": [],
+   "Mark": "74 %",
+   "Teacher": "Mr Jordan South"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-11-03T19:50:00+11:00",
+    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+    "Files": [],
+    "Mark": "74 %",
+    "Teacher": "Mr Jordan South"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Mode": "percent"
+ },
+ "Rubrics": [],
+ "Subject": "9 Engineering 2A (9Engi2A)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [],
+ "Title": "Balloon Car Challenge",
+ "Warnings": [],
+ "WorkType": "Assessment Task"
+}
+---
+
+[TestAssessmentPages/assessment_resubmission.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-10-02T00:00:00+10:00",
+ "Grading": [
+  {
+   "Action": "Resubmission required",
+   "At": "2026-10-27T20:13:00+11:00",
+   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+   "Files": [
+    {
+     "Kind": "kami",
+     "Link": "/learning/kami/7201",
+     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+     "Name": "hike_plan_alex",
+     "Size": ""
+    }
+   ],
+   "Mark": "",
+   "Teacher": "Mr Dana Marsh"
+  }
+ ],
+ "History": [
+  {
+   "At": "2026-10-29T14:21:00+11:00",
+   "By": "Alex Parent",
+   "Files": [
+    {
+     "Kind": "submission",
+     "Link": "/learning/assessments/9102/201/responses/7002/files/7102/download",
+     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+     "Name": "hike_plan_alex",
+     "Size": ""
+    }
+   ],
+   "Kind": "submission"
+  },
+  {
+   "Feedback": {
+    "Action": "Resubmission required",
+    "At": "2026-10-27T20:13:00+11:00",
+    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+    "Files": [
+     {
+      "Kind": "kami",
+      "Link": "/learning/kami/7201",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "Name": "hike_plan_alex",
+      "Size": ""
+     }
+    ],
+    "Mark": "",
+    "Teacher": "Mr Dana Marsh"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Mode": "percent"
+ },
+ "Rubrics": [
+  {
+   "Criteria": [
+    {
+     "Indicators": [
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Comprehensive, accurate, and insightful; includes context and purpose clearly</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Detailed and mostly accurate; minor gaps</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Adequate information; meets basic requirements</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited detail; lacks clarity or accuracy</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing or incorrect</p>\n"
+        }
+       ],
+       "Name": "<p>Background Information</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 8,
+         "Selected": false,
+         "Text": "<p>Balanced, nutritious, cost-effective; includes quantities and preparation notes</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>Mostly balanced and practical; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Basic plan with essential items; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Incomplete or impractical; lacks key items</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing or irrelevant</p>\n"
+        }
+       ],
+       "Name": "<p>Menu Plan &amp; Shopping List</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Complete, organized, and tailored to conditions; includes safety gear</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly complete; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic gear listed; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Incomplete or poorly organized</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Gear List</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Clear itinerary, roles, and responsibilities; well-structured</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly clear; minor gaps in roles or timing</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic details provided; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks structure</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Travel &amp; Group Details</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 8,
+         "Selected": false,
+         "Text": "<p>Detailed map, distances, elevation, and timing; contingency plans included</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>Mostly detailed; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Basic route info; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks key details</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Route Details</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Complete list with multiple contact points and relevant info</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly complete; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic contacts provided</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Emergency Contacts</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Comprehensive risk analysis with mitigation strategies; well-documented</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Detailed with minor gaps</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic risks identified; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks strategies</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Risk Management</p>\n"
+      }
+     ],
+     "Mark": "",
+     "Name": "<p>Planning</p>\n"
+    }
+   ],
+   "Levels": [
+    "<p>Well Above Standard</p>\n",
+    "<p>Above Standard</p>\n",
+    "<p>At Standard</p>\n",
+    "<p>Below Standard</p>\n",
+    "<p>Well Below Standard</p>\n"
+   ],
+   "Mark": "",
+   "Title": "2026 hike-planning-rubric"
+  }
+ ],
+ "Subject": "9 Outdoor Education 2A (9OuEd2A)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [
+  {
+   "Kind": "task",
+   "Link": "/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx",
+   "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "Name": "Hike Student Planning Assignment.docx",
+   "Size": "476.79 KB"
+  }
+ ],
+ "Title": "Overnight Hike Planning Task",
+ "Warnings": [],
+ "WorkType": "Assessment Task"
+}
+---
+
+[TestAssessmentPages/assessment_rubric_marked.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-10-02T00:00:00+10:00",
+ "Grading": [
+  {
+   "Action": "Resubmission required",
+   "At": "2026-10-27T20:13:00+11:00",
+   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+   "Files": [
+    {
+     "Kind": "kami",
+     "Link": "/learning/kami/7201",
+     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+     "Name": "Annotated plan",
+     "Size": ""
+    }
+   ],
+   "Mark": "",
+   "Teacher": "Mr Dana Marsh"
+  }
+ ],
+ "History": [
+  {
+   "At": "2026-10-29T14:21:00+11:00",
+   "By": "Alex Parent",
+   "Files": [
+    {
+     "Kind": "submission",
+     "Link": "/learning/assessments/9102/201/responses/7002/files/7102/download",
+     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+     "Name": "hike_plan_alex",
+     "Size": ""
+    }
+   ],
+   "Kind": "submission"
+  },
+  {
+   "Feedback": {
+    "Action": "Resubmission required",
+    "At": "2026-10-27T20:13:00+11:00",
+    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
+    "Files": [
+     {
+      "Kind": "kami",
+      "Link": "/learning/kami/7201",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "Name": "Annotated plan",
+      "Size": ""
+     }
+    ],
+    "Mark": "",
+    "Teacher": "Mr Dana Marsh"
+   },
+   "Kind": "feedback"
+  }
+ ],
+ "MarkScheme": {
+  "Mode": "percent"
+ },
+ "Rubrics": [
+  {
+   "Criteria": [
+    {
+     "Indicators": [
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Comprehensive, accurate, and insightful; includes context and purpose clearly</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": true,
+         "Text": "<p>Detailed and mostly accurate; minor gaps</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Adequate information; meets basic requirements</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited detail; lacks clarity or accuracy</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing or incorrect</p>\n"
+        }
+       ],
+       "Name": "<p>Background Information</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 8,
+         "Selected": false,
+         "Text": "<p>Balanced, nutritious, cost-effective; includes quantities and preparation notes</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>Mostly balanced and practical; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Basic plan with essential items; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Incomplete or impractical; lacks key items</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing or irrelevant</p>\n"
+        }
+       ],
+       "Name": "<p>Menu Plan &amp; Shopping List</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Complete, organized, and tailored to conditions; includes safety gear</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly complete; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic gear listed; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Incomplete or poorly organized</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Gear List</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Clear itinerary, roles, and responsibilities; well-structured</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly clear; minor gaps in roles or timing</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic details provided; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks structure</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Travel &amp; Group Details</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 8,
+         "Selected": false,
+         "Text": "<p>Detailed map, distances, elevation, and timing; contingency plans included</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>Mostly detailed; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Basic route info; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks key details</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Route Details</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Complete list with multiple contact points and relevant info</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Mostly complete; minor omissions</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic contacts provided</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Emergency Contacts</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Well Above Standard</p>\n",
+         "Points": 4,
+         "Selected": false,
+         "Text": "<p>Comprehensive risk analysis with mitigation strategies; well-documented</p>\n"
+        },
+        {
+         "Level": "<p>Above Standard</p>\n",
+         "Points": 3,
+         "Selected": false,
+         "Text": "<p>Detailed with minor gaps</p>\n"
+        },
+        {
+         "Level": "<p>At Standard</p>\n",
+         "Points": 2,
+         "Selected": false,
+         "Text": "<p>Basic risks identified; meets minimum</p>\n"
+        },
+        {
+         "Level": "<p>Below Standard</p>\n",
+         "Points": 1,
+         "Selected": false,
+         "Text": "<p>Limited or unclear; lacks strategies</p>\n"
+        },
+        {
+         "Level": "<p>Well Below Standard</p>\n",
+         "Points": 0,
+         "Selected": false,
+         "Text": "<p>Missing</p>\n"
+        }
+       ],
+       "Name": "<p>Risk Management</p>\n"
+      }
+     ],
+     "Mark": "30 / 36",
+     "Name": "<p>Planning</p>\n"
+    }
+   ],
+   "Levels": [
+    "<p>Well Above Standard</p>\n",
+    "<p>Above Standard</p>\n",
+    "<p>At Standard</p>\n",
+    "<p>Below Standard</p>\n",
+    "<p>Well Below Standard</p>\n"
+   ],
+   "Mark": "30 / 36",
+   "Title": "2026 hike-planning-rubric"
+  }
+ ],
+ "Subject": "9 Outdoor Education 2A (9OuEd2A)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [
+  {
+   "Kind": "task",
+   "Link": "/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx",
+   "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "Name": "Hike Student Planning Assignment.docx",
+   "Size": "476.79 KB"
+  }
+ ],
+ "Title": "Overnight Hike Planning Task",
+ "Warnings": [],
+ "WorkType": "Assessment Task"
+}
+---
+
+[TestAssessmentPages/assessment_submitted.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-01-16T23:59:00+11:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-10-11T23:32:00+11:00",
+   "CommentHTML": "",
+   "Files": [],
+   "Mark": "Submitted",
+   "Teacher": "Mr Chris Hale"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-10-11T23:32:00+11:00",
+    "CommentHTML": "",
+    "Files": [],
+    "Mark": "Submitted",
+    "Teacher": "Mr Chris Hale"
+   },
+   "Kind": "feedback"
+  },
+  {
+   "At": "2026-01-16T15:02:00+11:00",
+   "By": "Sam Parent",
+   "Files": [
+    {
+     "Kind": "submission",
+     "Link": "/learning/assessments/9103/202/responses/7001/files/7101/download",
+     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+     "Name": "Week 1 & 2 - English Reflection",
+     "Size": ""
+    }
+   ],
+   "Kind": "submission"
+  }
+ ],
+ "MarkScheme": {
+  "Bands": [
+   {
+    "caption": "A - Well above",
+    "lowerBound": 90,
+    "rawGrade": 95
+   },
+   {
+    "caption": "B - Above",
+    "lowerBound": 75,
+    "rawGrade": 82
+   },
+   {
+    "caption": "C - At expected level",
+    "lowerBound": 60,
+    "rawGrade": 67
+   },
+   {
+    "caption": "D - Below",
+    "lowerBound": 50,
+    "rawGrade": 55
+   },
+   {
+    "caption": "E - Well below",
+    "lowerBound": 0,
+    "rawGrade": 25
+   }
+  ],
+  "Mode": "letter"
+ },
+ "Rubrics": [],
+ "Subject": "7 English B (7Eng1B,7Eng2B)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [],
+ "Title": "T1 Reflection",
+ "Warnings": [],
+ "WorkType": "Class Work"
+}
+---
+
+[TestAssessmentPages/assessment_upcoming.html - 1]
+{
+ "DescriptionHTML": "<h2><span style=\"background-color:rgb(255,223,141);color:rgb(61,43,38);\"><span class=\"sb-ck-sticky-note\">Complete the following work in the Übungsbuch (workbook). The task instruction for each task has been translated for you below. </span></span></h2><h4><strong>Übungsbuch - Seite 92, Nummer 4</strong></h4><h4>a) What fits where? Match the blue words into the table. </h4><h4>b) What fits together? Connect. </h4><h4>c) What is correct? Cross in.</h4><h4>d) In the afternoon. Write the sentences correctly. Watch out: the word order is already given to you. You will need to adjust the endings and use the correct way to talk about the place. <br/><i>(Not sure how to do it? Check the grammar boxes on p. 85 and p. 86 in your Kursbücher.)</i></h4><h4> </h4><p> </p><h4><strong>Übungsbuch - Seite 97</strong></h4><h3><span style=\"color:rgb(217,38,38);\">Spend the rest of the homework time on the learning the vocabs for the upcoming vocab quiz.</span><br/><span class=\"mejs__offscreen\"><strong>ation</strong></span></h3><p> </p><p> </p><p> </p><h5>Tick box when done. ✅ Your work will be checked in class during our second lesson of the week. </h5>",
+ "Due": "2026-11-06T23:59:00+11:00",
+ "Grading": [],
+ "History": [],
+ "MarkScheme": null,
+ "Rubrics": [],
+ "Subject": "7 German C (7Germ1C,7Germ2C)",
+ "Submissions": "",
+ "TaskFiles": [],
+ "Title": "4 - Hausaufgaben - German homework - S. 92, Nr. 4",
+ "Warnings": [],
+ "WorkType": "Homework"
+}
+---
+
+[TestAssessmentPages/assessment_upcoming_file.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-11-06T08:00:00+11:00",
+ "Grading": [],
+ "History": [],
+ "MarkScheme": null,
+ "Rubrics": [],
+ "Subject": "7 English B (7Eng1B,7Eng2B)",
+ "Submissions": "",
+ "TaskFiles": [
+  {
+   "Kind": "task",
+   "Link": "/storage/fetch.php?hash=c328eb70504ad488a8e2695c3d3db05ba8e712de&name=Self-Assessment-Rubric-3-EXC-Schoolbox.csv",
+   "MIME": "text/csv",
+   "Name": "Self-Assessment-Rubric-3-EXC-Schoolbox.csv",
+   "Size": "940 B"
+  }
+ ],
+ "Title": "Group Project",
+ "Warnings": [],
+ "WorkType": "Research Project includes Self-assessment"
+}
+---

@@ -102,7 +102,7 @@ func TestDownloadGivesUpAfterOneRelogin(t *testing.T) {
 
 	_, _, err := c.Download(t.Context(), "/storage/fetch.php?hash=a", 1<<20)
 
-	require.ErrorIs(t, err, errLoginRequired)
+	require.ErrorIs(t, err, ErrLoginRequired)
 	assert.Len(t, doer.requests, 4)
 }
 

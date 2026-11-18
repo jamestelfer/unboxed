@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 )
@@ -119,9 +120,22 @@ func (c *Client) send(ctx context.Context, path string, query url.Values, accept
 	}
 	if resp.StatusCode != http.StatusOK {
 		defer func() { _ = resp.Body.Close() }()
+		if isLoginRedirect(resp) {
+			return nil, fmt.Errorf("GET %s: %w", path, ErrLoginRequired)
+		}
 		return nil, newAPIError(path, resp)
 	}
 	return resp, nil
+}
+
+// isLoginRedirect reports whether resp sends the client to the login page,
+// which is how Schoolbox answers page requests carrying a rejected token.
+func isLoginRedirect(resp *http.Response) bool {
+	if resp.StatusCode < 300 || resp.StatusCode >= 400 {
+		return false
+	}
+	loc, err := url.Parse(resp.Header.Get("Location"))
+	return err == nil && strings.HasPrefix(loc.Path, "/login")
 }
 
 func get[T any](ctx context.Context, c *Client, path string, query url.Values) (T, error) {

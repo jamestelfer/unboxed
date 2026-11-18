@@ -11,6 +11,18 @@ All JSON encoding and decoding uses Go 1.27's `encoding/json/v2` (and
 is categorically forbidden; the repository-wide `depguard` rule enforces this
 for production code, tests, and tools.
 
+In v2, `omitempty` omits only values that encode as JSON `null`, `""`, `{}` or
+`[]`; it keeps `false` and `0`. Choose the tag for each MCP tool output field
+by what its zero value means:
+
+- A field that only some items have (an `assessmentId` on due work alone, an
+  `articleId` on news results alone) is a pointer with `omitempty`, so it is
+  absent rather than zero.
+- A flag whose `false` carries meaning (search `more`) has no omit option and
+  is always emitted.
+- A flag where only `true` carries information (`allDay`, `unread`) uses
+  `omitzero`.
+
 ## Build and test
 
 ```
@@ -46,6 +58,23 @@ Tool versions (Go, golangci-lint, goreleaser, just) are pinned in `mise.toml`; r
 - A package containing go-snaps tests must call `snaps.Clean` from its
   `TestMain` so obsolete snapshots fail the normal test run and can be removed
   during regeneration.
+
+## Fixtures from real responses
+
+Fixtures captured from the live Schoolbox instance describe real children and
+staff, so they are anonymised before they are committed.
+
+- Keep raw captures only in the gitignored `probe-out/`.
+- Replace student, parent, staff and school names; user, portrait, assessment,
+  response, file and rubric IDs; storage hashes; licence keys and analytics IDs;
+  the hostname and app-store links. Use the same substitute for the same value
+  in every file, so one teacher's name and ID always map together.
+- Rewrite teacher comments and other free text that mentions a person as
+  neutral prose of similar structure.
+- Strip `<script>` and `<style>` bodies from HTML captures; they hold the
+  signed-in user's record and site keys.
+- Before committing, search the fixtures and generated snapshots for the real
+  surnames, the school name and the real hostname.
 
 ## Cross-platform rules
 

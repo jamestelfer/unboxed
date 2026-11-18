@@ -236,8 +236,9 @@ func TestGetDueWorkFiltersCalendar(t *testing.T) {
 		AllDay:       true,
 		Type:         "Due Work",
 		Detail:       "Submit via the task page.",
+		Done:         new(false),
 		Link:         "https://school.example/learning/assessments/9182/201?returnUrl=L2xlYXJuaW5n",
-		AssessmentID: 9182,
+		AssessmentID: new(9182),
 	}, due.Events[0])
 
 	var all calendarOut
@@ -277,10 +278,11 @@ func TestListAwaitingFeedbackOmitsMarkedWork(t *testing.T) {
 		Start:        "2026-11-12",
 		AllDay:       true,
 		Type:         "Due Work",
+		Done:         new(false),
 		Link:         "https://school.example/learning/assessments/1004/201",
-		AssessmentID: 1004,
+		AssessmentID: new(1004),
 	}, out.Items[0])
-	assert.Equal(t, 1006, out.Items[1].AssessmentID)
+	assert.Equal(t, new(1006), out.Items[1].AssessmentID)
 }
 
 func TestListAwaitingFeedbackEndsBeforeToday(t *testing.T) {
@@ -298,6 +300,77 @@ func TestListAwaitingFeedbackRejectsFutureRange(t *testing.T) {
 	msg := call(t, s, "list_awaiting_feedback", map[string]any{"student_id": 201, "from": "2026-11-17"}, nil)
 
 	assert.Contains(t, msg, "before today")
+}
+
+// TestCalendarOmitsMeaninglessFlags checks the JSON itself: false allDay is
+// implied by a full timestamp, and completed only applies to due work.
+func TestCalendarOmitsMeaninglessFlags(t *testing.T) {
+	start := time.Date(2026, 11, 23, 0, 0, 0, 0, melbourne)
+	end := time.Date(2026, 11, 30, 0, 0, 0, 0, melbourne)
+	s, _ := connect(t, map[string]string{
+		fmt.Sprintf("/calendar/ajax/full?end=%d&start=%d&userId=201", end.Unix(), start.Unix()): "calendar.json",
+	})
+
+	var raw struct {
+		Events []map[string]any `json:"events"`
+	}
+	mustCall(t, s, "get_calendar", map[string]any{"student_id": 201, "from": "2026-11-23", "to": "2026-11-29"}, &raw)
+
+	require.Len(t, raw.Events, 3)
+	for _, e := range raw.Events {
+		if e["kind"] == "dueWork" {
+			assert.Equal(t, false, e["completed"], "due work reports completion, even when false")
+		} else {
+			assert.NotContains(t, e, "completed", "%s events do not track completion", e["kind"])
+		}
+		if e["allDay"] == nil {
+			assert.Contains(t, e["start"], "T", "a timed event carries a full timestamp")
+		}
+		assert.NotEqual(t, false, e["allDay"])
+		if e["kind"] != "dueWork" {
+			assert.NotContains(t, e, "assessmentId", "only due work has an assessment")
+		}
+	}
+}
+
+func TestListNewsFlagsOnlyUnread(t *testing.T) {
+	s, _ := connect(t, map[string]string{"/news/lists/feed": "news_feed.json"})
+
+	var raw struct {
+		Articles []map[string]any `json:"articles"`
+	}
+	mustCall(t, s, "list_news", nil, &raw)
+
+	require.Len(t, raw.Articles, 2)
+	assert.Equal(t, true, raw.Articles[0]["unread"])
+	assert.NotContains(t, raw.Articles[1], "unread", "read articles omit the flag")
+}
+
+func TestListMarkedWorkOmitsFalseGradeBand(t *testing.T) {
+	s, _ := connect(t, feedRoutes)
+
+	var raw struct {
+		Items []map[string]any `json:"items"`
+	}
+	mustCall(t, s, "list_marked_work", map[string]any{"student_id": 201}, &raw)
+
+	require.NotEmpty(t, raw.Items)
+	for _, item := range raw.Items {
+		assert.NotEqual(t, false, item["gradeBand"], "gradeBand appears only when percent is a stand-in")
+		assert.InDelta(t, 20.0, item["weight"], 0.001)
+	}
+}
+
+func TestListMarkedWorkOmitsZeroWeight(t *testing.T) {
+	s, _ := connect(t, map[string]string{"/learning/evidenceFeed/user/201": "feed_duplicate.json"})
+
+	var raw struct {
+		Items []map[string]any `json:"items"`
+	}
+	mustCall(t, s, "list_marked_work", map[string]any{"student_id": 201}, &raw)
+
+	require.Len(t, raw.Items, 1)
+	assert.NotContains(t, raw.Items[0], "weight", "Schoolbox sends 0 for unweighted work")
 }
 
 func TestCalendarRejectsLongRanges(t *testing.T) {
@@ -420,11 +493,27 @@ func TestSearchReturnsHitsAcrossPages(t *testing.T) {
 		Meta:      "Posted 6 days ago by Ms Terry Teacher",
 		Summary:   "...buses leave at 8:30am from the front gate...",
 		Link:      "https://school.example/news/29648",
-		ArticleID: 29648,
+		ArticleID: new(29648),
 	}, out.Results[0])
 	assert.Equal(t, "Year 9 / Camps", out.Results[1].Where)
-	assert.Zero(t, out.Results[1].ArticleID)
+	assert.Nil(t, out.Results[1].ArticleID)
 	assert.Empty(t, out.Results[2].Link, "events without a url get no link")
+}
+
+func TestSearchJSONAlwaysHasMore(t *testing.T) {
+	s, _ := connect(t, searchRoutes)
+
+	var raw struct {
+		More    *bool            `json:"more"`
+		Results []map[string]any `json:"results"`
+	}
+	mustCall(t, s, "search", map[string]any{"query": "camp", "types": []string{"news"}, "from": "2026-01-01"}, &raw)
+
+	require.NotNil(t, raw.More, "more is reported even when false")
+	assert.False(t, *raw.More)
+	require.Len(t, raw.Results, 3)
+	assert.EqualValues(t, 29648, raw.Results[0]["articleId"])
+	assert.NotContains(t, raw.Results[1], "articleId", "only news results have an article id")
 }
 
 func TestSearchStopsAtLimit(t *testing.T) {

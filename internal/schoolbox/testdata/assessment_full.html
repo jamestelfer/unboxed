@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html xmlns:m="http://www.w3.org/1998/Math/MathML" lang="en">
+
+
+<head>
+    <title>Schoolbox - Local Produce Research Task - Alex Parent</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="en-au" />
+    <meta name="author" content="Schoolbox Pty Ltd"/>
+                <link rel="manifest" href="/manifest">
+        <meta itemprop="user.externalId" content="9001" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Schoolbox">
+    <meta name="theme-color" content="rgb(47, 89, 135)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-title" content="Schoolbox">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="/images/logo.php?logo=skin_favicon&size=favicon"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/logo.php?logo=skin_favicon&size=apple57">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/logo.php?logo=skin_favicon&size=apple60">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/logo.php?logo=skin_favicon&size=apple72">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/logo.php?logo=skin_favicon&size=apple76">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/logo.php?logo=skin_favicon&size=apple114">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/logo.php?logo=skin_favicon&size=apple120">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/logo.php?logo=skin_favicon&size=apple144">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/logo.php?logo=skin_favicon&size=apple152">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.php?logo=skin_favicon&size=apple180">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/core/core.css?v=26.1.17" />
+<style></style>
+<link rel="stylesheet" type="text/css" href="/css/core/skin.css.php?v=26.1.17&t=1786399643" />
+    <link rel="stylesheet" type="text/css" href="/static/css/vendors/fullcalendar/datepicker.css?v=26.1.17" />
+
+        
+        <script src="https://cdn.iframe.ly/embed.js?cancel=0&key=00000000000000000000000000000000"></script>
+
+        <script></script>
+    
+    <script src="/static/js/bundle/vendors.js?v=26.1.17"></script>
+    <script src="/static/js/bundle/main.js?v=26.1.17"></script>
+    <script src="/l10n?v=26.1.17&t=1768427384"></script>
+    <script src="/service-worker.js?v=26.1.17"></script>
+    <script src="/static/js/browser/browser-redirect.js?v=26.1.17"></script>
+
+        <script></script>
+</head>
+<body class=" ">
+<div id="toast-container">
+    <sbx-toast />
+</div>
+<script src="/static/js/bundle/sbxToast.js?v=26.1.17"></script>
+<div class="off-canvas-wrap" id="off-canvas-wrap" data-offcanvas data-transition="overlap">
+    <div class="inner-wrap left-open right-open" id="inner-wrap" data-inner-offcanvas>
+                        <aside id="left-menu" class="left-off-canvas-menu hide-for-print" data-side-nav>
+            <a
+                href="#"
+                title="Unpin side menu"
+                aria-label="Unpin side menu"
+                class="left-menu-dock sbx-icon-only-button"
+                id="left-menu-dock"
+                data-dock-state="1"
+                data-title-dock="Pin side menu"
+                data-title-undock="Unpin side menu"
+            >
+                <sbx-icon name="pin"></sbx-icon>
+            </a>
+            <div class="logo-wrapper">
+                <a href="/" class="logo">
+                    <img src="/images/logo.php?logo=skin_logo_large&size=normal" srcset="/images/logo.php?logo=skin_logo_large&size=normal 1x,/images/logo.php?logo=skin_logo_large&size=hidpi 2x" alt="Example College"/>
+                </a>
+            </div>
+
+                                                <div class="row">
+                        <ul class="account-menu-mobile accordion" id="account-menu-mobile" data-accordion>
+                            <li class="accordion-navigation">
+                                <a href="#account-content-mobile" class="profile-drop" id="profile-accordion">
+                                    <img src="/portrait.php?id=101&amp;size=square192"
+        
+                    height="72"
+        
+                    width="72"
+        
+                    alt="View Profile"
+            title="View Profile"
+            />                                    <span>Mr Pat Parent</span>
+                                </a>
+                                <div id="account-content-mobile" class="content">
+                                        
+<ul id="profile-options-mobile" class="profile-options-mobile">
+            <li class="separator">Profile Options</li>
+    
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/search/user/101">
+            <sbx-icon name="staff-students"></sbx-icon>
+            <span>Profile</span>
+        </a>
+    </li>
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/settings/notifications">
+            <sbx-icon name="settings"></sbx-icon>
+            <span>Notification Settings</span>
+        </a>
+    </li>
+        
+        
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/logout.php">
+            <sbx-icon name="logout"></sbx-icon>
+            <span>Logout</span>
+        </a>
+    </li>
+</ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                            
+                                                <nav class="row">
+                        <ul class="off-canvas-list second-nav" id="overflow-nav">
+                            <li data-sidenav-separator>
+                                <h3>Navigation</h3>
+                            </li>
+                            
+    <li data-id="4">         <a class="sbx-button--has-icon u-width-100"           href="/timetable"
+           title="View your school timetable"
+                   >
+            <sbx-icon name="timetable" size="1.30rem"></sbx-icon>
+            <span>Timetable</span>
+        </a>
+    </li>
+    <li data-id="5">         <a class="sbx-button--has-icon u-width-100"           href="/calendar/week"
+           title="School calendar events"
+                   >
+            <sbx-icon name="calendar" size="1.30rem"></sbx-icon>
+            <span>Calendar</span>
+        </a>
+    </li>
+    <li data-id="6">         <a class="sbx-button--has-icon u-width-100"           href="/news"
+           title="Current school news"
+                   >
+            <sbx-icon name="news" size="1.30rem"></sbx-icon>
+            <span>News</span>
+        </a>
+    </li>
+                        </ul>
+                    </nav>
+                            
+                                                
+<nav id="nav">
+    <ul class="off-canvas-list">
+        <li id="side-menu"><h3>Schoolbox</h3><div class="nav-wrapper"><ul class="off-canvas-list"><li ><a href="/homepage/500"
+                                                                           ><span>Year 7</span></a></li><li ><a href="/homepage/501"
+                                                                           ><span>Year 9</span></a></li><li ><a href="/homepage/502"
+                                                                           ><span>Arts</span></a></li><li ><a href="/homepage/503"
+                                                                           ><span>Performances</span></a></li><li ><a href="/homepage/504"
+                                                                           ><span>Senior FAQ</span></a></li><li ><a href="https://careers.example/"
+                                       target="_blank"                                    ><span>Careers</span></a></li><li ><a href="/homepage/505"
+                                                                           ><span>Leadership</span></a></li><li ><a href="/homepage/506"
+                                                                           ><span>Environment</span></a></li><li ><a href="/homepage/507"
+                                                                           ><span>Wellbeing</span></a></li></ul></div></li><li><h3>My Students</h3><div class="nav-wrapper"><ul class="off-canvas-list"><li><a href="/search/user/201">Alex Parent (9)</a></li><li><a href="/search/user/202">Sam Parent (7)</a></li></ul></div></li><li id="side-menu-mygroups" class="hide"><h3 class="side-menu-heading-link"><a href="/groups#my-favourite-groups" class="sbx-button--has-icon u-width-100" title="Modify"><sbx-icon name="modify"></sbx-icon>
+                            My Favourite Groups
+                        </a></h3><div class="nav-wrapper"><ul class="off-canvas-list"></ul></div></li><li id="side-menu-mylinks"><h3 class="side-menu-heading-link"><a href="/cms/myLinks" class="sbx-button--has-icon u-width-100" title="Modify"><sbx-icon name="modify"></sbx-icon>
+                            My Links
+                        </a></h3><div class="nav-wrapper my-links"><ul class="off-canvas-list"><li><a href="/homepage/508">Map</a></li></ul></div></li>    </ul>
+</nav>
+                                    </aside>
+
+        
+        <section class="main">
+            <div id="header">
+                                            </div>
+            <div class="hybrid-bar hide-for-print" id="hybrid-bar" >
+                <nav class="tab-bar">
+                    <section class="left-small" id="menu-toggle">
+                        <a class="left-off-canvas-toggle menu-icon" id="left-off-canvas-toggle">
+                            <svg width="18" height="14" viewBox="0 0 80 60">
+                                <rect width="100" height="10"></rect>
+                                <rect width="100" y="25" height="10"></rect>
+                                <rect width="100" y="50" height="10"></rect>
+                            </svg>
+                        </a>
+                    </section>
+
+                    <section class="tab-bar-section">
+                        <a href="/" class="logo">
+                            <img src="/images/logo.php?logo=skin_logo_square&size=normal" srcset="/images/logo.php?logo=skin_logo_square&size=normal 1x,/images/logo.php?logo=skin_logo_square&size=hidpi 2x" alt="Example College"/>
+                        </a>
+
+                                                                                    <ul id="top-menu" class="top-menu">
+                                    
+    <li data-id="4">         <a class="sbx-button--has-icon u-width-100"           href="/timetable"
+           title="View your school timetable"
+                   >
+            <sbx-icon name="timetable" size="1.30rem"></sbx-icon>
+            <span>Timetable</span>
+        </a>
+    </li>
+    <li data-id="5">         <a class="sbx-button--has-icon u-width-100"           href="/calendar/week"
+           title="School calendar events"
+                   >
+            <sbx-icon name="calendar" size="1.30rem"></sbx-icon>
+            <span>Calendar</span>
+        </a>
+    </li>
+    <li data-id="6">         <a class="sbx-button--has-icon u-width-100"           href="/news"
+           title="Current school news"
+                   >
+            <sbx-icon name="news" size="1.30rem"></sbx-icon>
+            <span>News</span>
+        </a>
+    </li>
+                                </ul>
+                                                    
+                                                                                    <header-search></header-search>
+                                                    
+                                                                                    <a href="#" id="profile-drop" data-test="profile-drop" title="Mr Pat Parent" class="account-menu">
+                                    <img src="/portrait.php?id=101&amp;size=square192"
+        
+                    height="72"
+        
+                    width="72"
+        
+                    alt="View Profile"
+            title="View Profile"
+            />                                </a>
+                                <div id="account-content" class="account-drop" data-test="account-content">
+                                        
+<ul id="profile-options" class="profile-options">
+            <li class="separator">Mr Pat Parent</li>
+    
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/search/user/101">
+            <sbx-icon name="staff-students"></sbx-icon>
+            <span>Profile</span>
+        </a>
+    </li>
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/settings/notifications">
+            <sbx-icon name="settings"></sbx-icon>
+            <span>Notification Settings</span>
+        </a>
+    </li>
+        
+        
+    <li>
+        <a class="account-menu__link sbx-button--has-icon" href="/logout.php">
+            <sbx-icon name="logout"></sbx-icon>
+            <span>Logout</span>
+        </a>
+    </li>
+</ul>
+                                </div>
+                                                                        </section>
+
+                                                                        <section class="right-small" id="notifications">
+                                <a class="right-off-canvas-toggle" id="notification-toggle" data-unread="1" aria-label="Notifications">
+                                    <sbx-icon name="notifications" color="currentColor" size="1rem"></sbx-icon>
+                                    <span data-unread-count>1</span>
+                                </a>
+                            </section>
+                                            
+                </nav>
+            </div>
+
+            <div id="container">
+                <div id="content">
+                        <ul class="breadcrumb">
+                                        <li>
+                <a  href="/learning/classes" >Learning</a>
+            </li>
+                                            <li>
+                <a  href="/homepage/509" >9 Food Studies 2A (9Food2A)</a>
+            </li>
+                                            <li class="active">
+                <span>Local Produce Research Task</span>
+            </li>
+                        </ul>
+
+
+
+<script type="text/javascript"></script>
+
+<div class="row actions-small-2">
+    <div class="small-12 columns">
+        <h1>Local Produce Research Task</h1>
+        <ul class="meta"><li><sbx-icon name="calendar" color="var(--sbx-color-text-secondary)"></sbx-icon><span class="    " title="Friday October 2nd 2026 11:59pm"><span>Due </span><time datetime="2026-10-02T23:59:00+10:00">Oct 2, 2026</time></span></li><li><sbx-icon name="due-work" color="var(--sbx-color-text-secondary)"></sbx-icon> Assessment Task</li><li><sbx-icon name="upload" color="var(--sbx-color-text-secondary)"></sbx-icon> This assessment no longer accepts submissions.</li><li title=""><sbx-icon name="staff-students" color="var(--sbx-color-text-secondary)"></sbx-icon><a href="/search/user/201">Alex Parent</a></li></ul>    </div>
+                </div>
+
+<div class="row">
+    <div class="small-12 island">
+        <section>
+                            <script src="/static/js/immersive-reader/jquery.immersive-reader.js?v=26.1.17" type="text/javascript"></script>
+            <script type="text/javascript"></script>
+            <div class='immersive-reader-button' id="ir-button" data-immersive-reader="button"></div>
+                <article class="content" id="ir-content" >
+            <p>Choose one locally grown food and research how it reaches the market. Record your findings in the class notebook before the unit test.</p>
+        </article>
+    
+        </section>
+    </div>
+</div>
+
+    <div class="row">
+    <div class="small-12 columns">
+        <h2 class="subheader">Grading</h2>
+    </div>
+</div>
+
+<div class="row" data-test="assessment-feedback-summary">
+    <div class="small-12 island">
+        <section>
+            
+
+
+
+
+
+
+
+            
+
+    
+
+        
+
+<ul class="information-list reply">
+    <li class="">
+        <div class="list-item flex-grade">
+            <div class="card small-12 sibling">
+        <a href="/search/user/303" title="View Profile">
+                <img src="/portrait.php?id=303&amp;size=square64" alt="">
+        <p>
+             Feedback by Mrs Robin Stone
+            <p class="meta">
+                Nov 4, 2026 12:36pm
+            </p>
+        </p>
+            </a>
+    </div>
+                            <div class="grade gradient-0-bg" data-test="assessment-feedback-mark">
+                    <span>28 / 40</span>
+                </div>
+                    </div>
+        <nav>
+                                </nav>
+
+                    <blockquote class=""
+                    ><p>The work shows a clear grasp of the main ideas.</p></blockquote>
+        
+        
+                
+        <div class="rubric-wrap "
+                    >
+            <div data-vue-app="rubric-readonly">
+    <rubric-readonly
+        :rubric-marked-grids-payload="[]"
+        :assessment-mark-scheme="{&quot;mode&quot;:&quot;raw&quot;,&quot;conf&quot;:{&quot;totalMark&quot;:40}}"
+        :participant-id="201"
+                        show-group-total            />
+</div>
+<script type="text/javascript" src="/static/js/bundle/rubricReadonly.js?v=26.1.17"></script>
+        </div>
+    </li>
+</ul>
+<script></script>
+        </section>
+    </div>
+</div>
+
+
+<div class="toast" data-alert="" id="publish-to-eportfolio-label"></div>
+
+    <div class="row">
+    <div class="small-12 columns">
+                   <a href="/homepage/509" class="submit button full-width">Return</a>
+                <div class="toast" data-toast></div>
+    </div>
+</div>
+
+
+<script type="application/javascript" src="/static/js/submissions/jquery.kami-export.js?v=26.1.17"></script>
+<script type="text/javascript"></script>
+
+<div class="row">
+    <div class="small-12 island">
+        <h2 class="subheader">Submission History</h2>
+                            <section data-submission-history data-test="assessment-submission-history">
+                                                        
+
+
+
+
+
+
+
+            
+
+    
+
+        
+
+<ul class="information-list reply">
+    <li class="actions-small-1">
+        <div class="list-item flex-grade">
+                        <div class="compact card small-12 sibling">
+                                                    <a href="/search/user/303" title="View Profile">                    <img src="/portrait.php?id=303&amp;size=square64" alt="">
+                    <p>
+                         Feedback by Mrs Robin Stone
+                        <span class="pipe meta">
+                            Nov 4, 2026 12:36pm
+                        </span>
+                    </p>
+                </a>
+                            </div>
+                                        <div class="grade gradient-0-bg" data-test="assessment-feedback-mark">
+                    <span>28 / 40</span>
+                </div>
+                    </div>
+        <nav>
+                            <a href="#" class="icon-down-arrow" data-collapser="feedback--982049"></a>
+                                </nav>
+
+                    <blockquote class="hide"
+                                    data-collapse-state="collapsed"
+                data-collapsable="feedback--982049"
+                    ><p>The work shows a clear grasp of the main ideas.</p></blockquote>
+        
+        
+                
+        <div class="rubric-wrap hide"
+                            data-collapse-state="collapsed"
+                data-collapsable="feedback--982049"
+                    >
+            <div data-vue-app="rubric-readonly">
+    <rubric-readonly
+        :rubric-marked-grids-payload="[]"
+        :assessment-mark-scheme="{&quot;mode&quot;:&quot;raw&quot;,&quot;conf&quot;:{&quot;totalMark&quot;:40}}"
+        :participant-id="201"
+                        show-group-total            />
+</div>
+<script type="text/javascript" src="/static/js/bundle/rubricReadonly.js?v=26.1.17"></script>
+        </div>
+    </li>
+</ul>
+<script></script>
+                                </section>
+                    <div class="toast" data-alert></div>
+    </div>
+</div>
+
+                </div>
+            </div>
+
+                            <div id="footer" class="clearfix">
+                    <ul>
+                        <li>2026 &copy; Copyright <a href="http://www.school.example">Example College</a></li>
+                        <li><a href="/policy">Guidelines of Use and Privacy Policy</a></li>
+                        <li><a href="https://schoolbox.education" title="Schoolbox, Virtual Learning Environment, Learning Management System, LMS">Schoolbox</a>
+                            26.1.17</li>
+                                                    <li><a href="/feedback">Support and Feedback</a></li>
+                                                                                            </ul>
+                </div>
+
+                                
+                <script type="text/javascript"></script>
+                                
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script></script>
+            
+                    </section>
+        
+
+                                                                    <aside class="right-off-canvas-menu island no-pad hide-for-print" id="msgs" data-unread="1">
+                    <ul class="off-canvas-list" id="message-list">
+                        <li>
+                            <a
+                                href="#"
+                                title="Unpin notifications"
+                                aria-label="Unpin notifications"
+                                class="right-menu-dock sbx-icon-only-button"
+                                id="right-menu-dock"
+                                data-dock-state="1"
+                                data-title-dock="Pin notifications"
+                                data-title-undock="Unpin notifications"
+                            >
+                                <sbx-icon name="pin"></sbx-icon>
+                            </a>
+                            <label id="notification-toggle-full">Notifications</label>
+                            <a class="settings-button sbx-icon-only-button" href="/settings/notifications" aria-label="Modify notification settings" title="Modify notification settings"><sbx-icon name="settings"></sbx-icon></a>
+                        </li>
+                        
+    <div data-vue-app="pwa-menu">
+                        
+                                    
+        <pwa-menu
+            page="sidebar"
+            :install-google="&quot;https:\/\/play.google.com\/store\/apps\/details?id=example.school.eduapp&amp;hl=en-AU&quot;"
+            :install-apple="&quot;https:\/\/apps.apple.com\/au\/app\/example-college\/id1000000000&quot;"
+            :pwa-enabled="true"
+            :notifications-enabled="true"
+        />
+    </div>
+                        <li>
+                            <a id="msg-mar" class="mark-all-read button sbx-button--has-icon u-width-100" href="#"><sbx-icon name="approve"></sbx-icon> Mark all read</a>
+                        </li>
+                        <li>
+                            <section>
+                                <ul id="msg-content" class="action-list">
+                                    <li data-msgitem class="actions-small-1">
+                                        <div class="list-item">
+                                            <div class="compact card wrap-down small-12">
+                                                <a data-msgitem-href class="no-pad">
+                                                    <div class="u-flex u-flex--align-start">
+                                                        <img data-msgitem-thumb class="u-flex__item--none" />
+                                                        <div>
+                                                            <p data-msgitem-title></p>
+                                                            <p class="meta spaced" data-msgitem-time></p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <nav>
+                                            <a data-msgitem-ack class="no-pad sbx-icon-only-button" title="Mark as read"><sbx-icon name="approve"></sbx-icon></a>
+                                        </nav>
+                                    </li>
+                                </ul>
+                            </section>
+                        </li>
+                        <li>
+                            <a href="/notifications" class="button" data-msgfooter-action>
+                                <span class="connecting"></span>&nbsp;Connecting&hellip;
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
+                <div id="alert-dialog" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                    <h2 data-modal-title></h2>
+                    <ul id="alert-content" class="information-list no-pad">
+                        <li data-msgitem>
+                            <div class="card wrap-down small-12">
+                                <a data-msgitem-href>
+                                    <img data-msgitem-thumb />
+                                    <p data-msgitem-title></p>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                </div>
+
+                                <script type="text/javascript"></script>
+                                            <a href="#" class="exit-off-canvas"></a>
+    </div>
+</div>
+<script src="/static/js/bundle/pwa.js?v=26.1.17"></script>
+<script src="/static/js/bundle/headerSearch.js?v=26.1.17"></script>
+</body>
+</html>
