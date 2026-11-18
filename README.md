@@ -48,6 +48,7 @@ Every tool is read-only.
 | `grade_stats` | Mark statistics by subject and work type, with trend and grade tallies. Defaults to the current semester |
 | `list_news_topics` | The school's news topics, with the slug `list_news` takes |
 | `list_news` | News articles addressed to the parent, with their topics, optionally filtered by topic slug or name |
+| `search` | Site search for a keyword, most relevant first, optionally by result type and date. News results link to `get_article` |
 | `get_article` | One news article as plain text, with the names of its attachments |
 | `get_attachment` | A file attached to a news article, up to 10 MB |
 

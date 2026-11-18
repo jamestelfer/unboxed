@@ -395,6 +395,67 @@ func TestListNewsRejectsUnknownTopic(t *testing.T) {
 	assert.Contains(t, msg, `no news topic "chess"; choose one of: general, sport, camps-excursions`)
 }
 
+const searchNews = "filter=%7B%22types%22%3A%5B%22news%22%5D%2C%22date%22%3A%7B%22from%22%3A%222026-01-01%22%7D%7D&keyword=camp"
+
+var searchRoutes = map[string]string{
+	"/api/search?" + searchNews:                       "search_page1.json",
+	"/api/search?cursor=Y3Vyc29yLTI%3D&" + searchNews: "search_page2.json",
+	"/api/search?keyword=camp":                        "search_page1.json",
+	"/api/search?cursor=Y3Vyc29yLTI%3D&keyword=camp":  "search_page2.json",
+}
+
+func TestSearchReturnsHitsAcrossPages(t *testing.T) {
+	s, _ := connect(t, searchRoutes)
+
+	var out searchOut
+	mustCall(t, s, "search", map[string]any{"query": "camp", "types": []string{"news"}, "from": "2026-01-01"}, &out)
+
+	assert.Equal(t, 3, out.Count)
+	assert.False(t, out.More)
+	require.Len(t, out.Results, 3)
+	assert.Equal(t, SearchHit{
+		Type:      "news",
+		Title:     "Year 9 Camp update",
+		Date:      "2026-11-11",
+		Meta:      "Posted 6 days ago by Ms Terry Teacher",
+		Summary:   "...buses leave at 8:30am from the front gate...",
+		Link:      "https://school.example/news/29648",
+		ArticleID: 29648,
+	}, out.Results[0])
+	assert.Equal(t, "Year 9 / Camps", out.Results[1].Where)
+	assert.Zero(t, out.Results[1].ArticleID)
+	assert.Empty(t, out.Results[2].Link, "events without a url get no link")
+}
+
+func TestSearchStopsAtLimit(t *testing.T) {
+	s, fx := connect(t, searchRoutes)
+
+	var out searchOut
+	mustCall(t, s, "search", map[string]any{"query": "camp", "limit": 2}, &out)
+
+	assert.Len(t, out.Results, 2)
+	assert.True(t, out.More)
+	assert.Equal(t, "/api/search?keyword=camp", fx.lastRequest(), "the second page is not fetched")
+}
+
+func TestSearchValidatesArguments(t *testing.T) {
+	s, fx := connect(t, nil)
+	for name, tc := range map[string]struct {
+		args map[string]any
+		want string
+	}{
+		"short query":  {map[string]any{"query": " a "}, "at least 2 characters"},
+		"unknown type": {map[string]any{"query": "camp", "types": []string{"homework"}}, `unknown type "homework"`},
+		"bad date":     {map[string]any{"query": "camp", "from": "1 Jan"}, "from: want YYYY-MM-DD"},
+		"over limit":   {map[string]any{"query": "camp", "limit": 51}, "limit must be between 1 and 50"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			assert.Contains(t, call(t, s, "search", tc.args, nil), tc.want)
+		})
+	}
+	assert.NotContains(t, fx.requests, "/api/search?keyword=camp")
+}
+
 func TestGetArticleListsAttachments(t *testing.T) {
 	s, _ := connect(t, map[string]string{"/news/29655": "news_article.json"})
 
