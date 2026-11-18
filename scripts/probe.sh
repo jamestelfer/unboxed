@@ -3,7 +3,7 @@
 # Read-only probe of the Schoolbox API. Prints response shapes (keys, types,
 # counts) and HTTP status; never prints the token. Raw bodies go to probe-out/.
 #
-# Reads JWT and SCHOOLBOX_URL from the environment (direnv provides them).
+# Reads SCHOOLBOX_TOKEN and SCHOOLBOX_URL from the environment (direnv provides them).
 
 set -euo pipefail
 
@@ -16,11 +16,11 @@ err() {
 }
 
 load_token() {
-  if [[ -z "${JWT:-}" ]]; then
-    err "JWT is not set; load the project environment with direnv"
+  if [[ -z "${SCHOOLBOX_TOKEN:-}" ]]; then
+    err "SCHOOLBOX_TOKEN is not set; load the project environment with direnv"
     return 1
   fi
-  TOKEN="${JWT}"
+  TOKEN="${SCHOOLBOX_TOKEN}"
 }
 
 b64url_decode() {

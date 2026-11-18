@@ -11,20 +11,28 @@ The server reads its configuration from the environment:
 | Variable | Value |
 | -------- | ----- |
 | `SCHOOLBOX_URL` | Root URL of the Schoolbox site, for example `https://schoolbox.example.edu.au` |
-| `JWT` | Schoolbox bearer token for the parent's account |
+| `SCHOOLBOX_TOKEN` | Schoolbox bearer token (a JWT) for the parent's account |
 
 Treat the token as a password. It grants the same read access as the parent's login.
 
-Register the server with an MCP client. For Claude Code:
+Add the server to your MCP client's configuration. Claude Desktop, Claude Code (`.mcp.json`) and most other clients use this format:
 
-```sh
-claude mcp add schoolbox \
-  --env SCHOOLBOX_URL=https://schoolbox.example.edu.au \
-  --env JWT="${JWT}" \
-  -- unboxed mcp
+```json
+{
+  "mcpServers": {
+    "schoolbox": {
+      "command": "unboxed",
+      "args": ["mcp"],
+      "env": {
+        "SCHOOLBOX_URL": "https://schoolbox.example.edu.au",
+        "SCHOOLBOX_TOKEN": "<token>"
+      }
+    }
+  }
+}
 ```
 
-Other clients take the same command, `unboxed mcp`, and the same two environment variables in their server configuration.
+Keep a configuration file that holds the token out of version control.
 
 ### Tools
 

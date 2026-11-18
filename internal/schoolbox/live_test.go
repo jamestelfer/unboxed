@@ -10,12 +10,12 @@ import (
 )
 
 // Run with: go test -tags live -run Live ./internal/schoolbox
-// JWT and SCHOOLBOX_URL come from the environment, which direnv provides.
+// SCHOOLBOX_TOKEN and SCHOOLBOX_URL come from the environment, which direnv provides.
 // Logs counts only, never record contents.
 func TestLiveEndpointsDecode(t *testing.T) {
-	token, baseURL := os.Getenv("JWT"), os.Getenv("SCHOOLBOX_URL")
+	token, baseURL := os.Getenv("SCHOOLBOX_TOKEN"), os.Getenv("SCHOOLBOX_URL")
 	if token == "" || baseURL == "" {
-		t.Skip("JWT and SCHOOLBOX_URL must be set")
+		t.Skip("SCHOOLBOX_TOKEN and SCHOOLBOX_URL must be set")
 	}
 	c, err := New(baseURL, token)
 	if err != nil {
