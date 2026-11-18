@@ -30,7 +30,9 @@ var ErrTooLarge = errors.New("file too large")
 // Download fetches a site-relative file link such as File.Links.Fetch, up to
 // limit bytes. The file store ignores bearer tokens and redirects to the login
 // page, so Download exchanges the token for a session cookie on first use and
-// again if the session lapses. It returns the body and its content type.
+// again if the session lapses. The same cookie downloads assessment submission
+// files (/learning/assessments/…/responses/…/download), confirmed against a
+// live instance. It returns the body and its content type.
 func (c *Client) Download(ctx context.Context, link string, limit int64) ([]byte, string, error) {
 	u, err := c.siteURL(link)
 	if err != nil {
@@ -42,14 +44,12 @@ func (c *Client) Download(ctx context.Context, link string, limit int64) ([]byte
 			return nil, "", err
 		}
 		body, mime, err := c.download(ctx, u, cookies, limit)
-		if errors.Is(err, errLoginRequired) && attempt == 0 {
+		if errors.Is(err, ErrLoginRequired) && attempt == 0 {
 			continue
 		}
 		return body, mime, err
 	}
 }
-
-var errLoginRequired = errors.New("redirected to login")
 
 func (c *Client) download(ctx context.Context, u *url.URL, cookies []*http.Cookie, limit int64) ([]byte, string, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
@@ -67,7 +67,7 @@ func (c *Client) download(ctx context.Context, u *url.URL, cookies []*http.Cooki
 	switch {
 	case resp.StatusCode >= 300 && resp.StatusCode < 400,
 		resp.StatusCode == http.StatusUnauthorized:
-		return nil, "", fmt.Errorf("GET %s: %w", u.Path, errLoginRequired)
+		return nil, "", fmt.Errorf("GET %s: %w", u.Path, ErrLoginRequired)
 	case resp.StatusCode != http.StatusOK:
 		return nil, "", newAPIError(u.Path, resp)
 	}

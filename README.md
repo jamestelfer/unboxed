@@ -2,7 +2,7 @@
 
 Connect to Schoolbox with your AI agents via MCP.
 
-`unboxed mcp` runs a read-only [Model Context Protocol](https://modelcontextprotocol.io/) server over stdio. It gives an AI agent a parent's view of Schoolbox: timetable, due work, marked work and results, and school news with its attachments.
+`unboxed mcp` runs a read-only [Model Context Protocol](https://modelcontextprotocol.io/) server over stdio. It gives an AI agent a parent's view of Schoolbox: timetable, due work, assessment details and feedback, marked work and results, and school news with its attachments.
 
 ## Usage
 
@@ -42,8 +42,10 @@ Every tool is read-only.
 | ---- | ------- |
 | `list_students` | The children linked to the account, with the `student_id` the other tools take |
 | `get_calendar` | Classes, events, excursions and due work between two dates. Defaults to the next 7 days |
-| `get_due_work` | Homework and assessments due between two dates. Defaults to the next 14 days |
+| `get_due_work` | Homework and assessments due between two dates, each with its `assessmentId`. Defaults to the next 14 days |
 | `list_awaiting_feedback` | Past due work with no mark or feedback yet. Defaults to the last 14 days, ending yesterday |
+| `get_assessment` | One assessment in full: description, task files, grading and comments, mark scheme, rubric and submission history |
+| `get_assessment_file` | A task sheet, submission or annotated feedback file listed by `get_assessment`, up to 10 MB |
 | `list_marked_work` | Marked work with the mark, subject, teacher and written feedback. Defaults to the last 14 days |
 | `grade_stats` | Mark statistics by subject and work type, with trend and grade tallies. Defaults to the current semester |
 | `list_news_topics` | The school's news topics, with the slug `list_news` takes |
@@ -55,6 +57,8 @@ Every tool is read-only.
 Date ranges for the calendar, due work and awaiting feedback are capped at 31 days.
 
 `list_awaiting_feedback` cannot tell whether work was submitted. Schoolbox's calendar `completed` flag stays false even for marked work, so the tool relies on the absence of feedback instead.
+
+`get_assessment` returns each file's Schoolbox URL, which opens in a browser signed in to Schoolbox, and an MCP resource link for clients that render them. Kami annotations are viewer pages, so they open only in Schoolbox.
 
 `grade_stats` separates completion statuses such as "Submitted" from numeric marks. Schoolbox reports descriptor grades (for example "C") as fixed stand-in percentages, so these are flagged rather than averaged as genuine marks.
 

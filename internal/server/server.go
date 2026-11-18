@@ -72,6 +72,7 @@ func New(cfg Config) (*mcp.Server, error) {
 	mcp.AddTool(srv, &mcp.Tool{
 		Name: "get_due_work",
 		Description: "List homework and assessments due between two dates, taken from the student's calendar. " +
+			"Each item carries the assessmentId that get_assessment takes, and completed shows whether the student has ticked it off. " +
 			"Defaults to the next 14 days from today. Ranges are capped at 31 days.",
 		Annotations: readOnly,
 	}, s.getDueWork)
@@ -129,6 +130,22 @@ func New(cfg Config) (*mcp.Server, error) {
 			"Files over 10 MB are refused.",
 		Annotations: readOnly,
 	}, s.getAttachment)
+	mcp.AddTool(srv, &mcp.Tool{
+		Name: "get_assessment",
+		Description: "Read one assessment or homework task in full: title, subject, due date, the task description as " +
+			"plain text, task files, the teacher's grading (mark, comment, annotated files), the mark scheme, the " +
+			"rubric with every descriptor and the selected one flagged, and the submission history. Take " +
+			"assessment_id from list_marked_work, list_awaiting_feedback, get_due_work or get_calendar. File urls open in a browser signed " +
+			"in to Schoolbox; use get_assessment_file to read a file's content.",
+		Annotations: readOnly,
+	}, s.getAssessment)
+	mcp.AddTool(srv, &mcp.Tool{
+		Name: "get_assessment_file",
+		Description: "Download a file listed by get_assessment: a task sheet, a student submission or an annotated " +
+			"feedback file. Images return as image content, text as text, and other files (PDF, Word) as an " +
+			"embedded resource. Kami annotations open only in Schoolbox. Files over 10 MB are refused.",
+		Annotations: readOnly,
+	}, s.getAssessmentFile)
 	return srv, nil
 }
 
@@ -258,15 +275,18 @@ type Event struct {
 	WorkType string `json:"workType,omitempty"`
 	Start    string `json:"start"`
 	End      string `json:"end,omitempty"`
-	AllDay   bool   `json:"allDay,omitempty"`
+	AllDay   bool   `json:"allDay,omitzero"`
 	Type     string `json:"type,omitempty"`
 	Location string `json:"location,omitempty"`
 	Author   string `json:"author,omitempty"`
 	Detail   string `json:"detail,omitempty"`
-	Done     bool   `json:"completed,omitempty"`
-	Link     string `json:"link,omitempty"`
-	// Due work only; matches assessmentId in list_marked_work.
-	AssessmentID int `json:"assessmentId,omitempty"`
+	// Due work only: whether the student has ticked it off. Schoolbox sends
+	// false on every other event, where it means nothing.
+	Done *bool  `json:"completed,omitempty"`
+	Link string `json:"link,omitempty"`
+	// Due work only; matches assessmentId in list_marked_work and is what
+	// get_assessment takes.
+	AssessmentID *int `json:"assessmentId,omitempty"`
 }
 
 type calendarOut struct {
@@ -388,10 +408,7 @@ func (s *service) event(e *schoolbox.Event) Event {
 		Location: e.Meta.Location,
 		Author:   e.Meta.Author,
 		Detail:   htmlToText(e.Meta.Detail),
-		Done:     e.Meta.Completed,
 		Link:     s.link(e.Path),
-
-		AssessmentID: e.AssessmentID,
 	}
 	if !e.End.IsZero() {
 		out.End = e.End.In(loc).Format(layout)
@@ -400,6 +417,10 @@ func (s *service) event(e *schoolbox.Event) Event {
 		out.Title = cmp.Or(e.Meta.Title, e.Title)
 		out.Subject = e.Meta.FolderName
 		out.WorkType = e.Meta.WorkType
+		out.Done = new(e.Meta.Completed)
+		if e.AssessmentID != 0 {
+			out.AssessmentID = new(e.AssessmentID)
+		}
 	}
 	return out
 }
@@ -428,21 +449,22 @@ func (s *service) link(path string) string {
 }
 
 type MarkedWork struct {
-	AssessmentID int      `json:"assessmentId"`
-	FeedbackID   int      `json:"feedbackId"`
-	Title        string   `json:"title"`
-	Subject      string   `json:"subject"`
-	WorkType     string   `json:"workType,omitempty"`
-	Weight       float64  `json:"weight,omitempty"`
-	Due          string   `json:"due,omitempty"`
-	Marked       string   `json:"marked"`
-	Teacher      string   `json:"teacher"`
-	Mark         string   `json:"mark"`
-	Percent      *float64 `json:"percent,omitempty"`
-	Grade        string   `json:"grade,omitempty"`
-	Status       string   `json:"status,omitempty"`
+	AssessmentID int    `json:"assessmentId"`
+	FeedbackID   int    `json:"feedbackId"`
+	Title        string `json:"title"`
+	Subject      string `json:"subject"`
+	WorkType     string `json:"workType,omitempty"`
+	// Set only when the teacher weighted the assessment; Schoolbox sends 0 otherwise.
+	Weight  *float64 `json:"weight,omitempty"`
+	Due     string   `json:"due,omitempty"`
+	Marked  string   `json:"marked"`
+	Teacher string   `json:"teacher"`
+	Mark    string   `json:"mark"`
+	Percent *float64 `json:"percent,omitempty"`
+	Grade   string   `json:"grade,omitempty"`
+	Status  string   `json:"status,omitempty"`
 	// Percent is a stand-in for the grade (C=70, B=85), not an earned score.
-	GradeBand bool   `json:"gradeBand,omitempty"`
+	GradeBand bool   `json:"gradeBand,omitzero"`
 	Comment   string `json:"comment"`
 	Link      string `json:"link,omitempty"`
 }
@@ -487,11 +509,26 @@ func (s *service) gradeStats(ctx context.Context, _ *mcp.CallToolRequest, a rang
 		w := &items[i]
 		marked, _ := time.ParseInLocation(time.DateOnly, w.Marked, loc)
 		results = append(results, grades.Result{
-			Title: w.Title, Subject: w.Subject, WorkType: w.WorkType, Weight: w.Weight, Marked: marked,
+			Title: w.Title, Subject: w.Subject, WorkType: w.WorkType, Weight: weightOf(w), Marked: marked,
 			Score: grades.Score{Percent: w.Percent, Grade: w.Grade, Status: w.Status, GradeBand: w.GradeBand},
 		})
 	}
 	return nil, statsOut{Student: student.FullName, Period: periodOf(start, end), Summary: grades.Summarise(results)}, nil
+}
+
+func weightOf(w *MarkedWork) float64 {
+	if w.Weight == nil {
+		return 0
+	}
+	return *w.Weight
+}
+
+// positive returns a pointer to v, or nil when v is not above zero.
+func positive(v float64) *float64 {
+	if v <= 0 {
+		return nil
+	}
+	return &v
 }
 
 // semesterStart is 1 January or 1 July, matching Australian school semesters.
@@ -539,7 +576,7 @@ func (s *service) feedback(ctx context.Context, studentID int, start, end time.T
 			Title:        f.Assessment.Title,
 			Subject:      f.Assessment.FolderName,
 			WorkType:     f.Assessment.WorkType,
-			Weight:       f.Assessment.Weight,
+			Weight:       positive(f.Assessment.Weight),
 			Marked:       item.Date.In(loc).Format(time.DateOnly),
 			Teacher:      f.Instructor.FullName,
 			Mark:         f.Mark,
@@ -622,7 +659,7 @@ type NewsItem struct {
 	Blurb     string   `json:"blurb,omitempty"`
 	Author    string   `json:"author"`
 	Published string   `json:"published"`
-	Unread    bool     `json:"unread,omitempty"`
+	Unread    bool     `json:"unread,omitzero"`
 	Topics    []string `json:"topics,omitempty"`
 }
 
@@ -718,17 +755,18 @@ type SearchHit struct {
 	Title string `json:"title"`
 	Date  string `json:"date,omitempty"`
 	// The folders the result sits in, e.g. "Year 9 / Camps".
-	Where     string `json:"where,omitempty"`
-	Meta      string `json:"meta,omitempty"`
-	Summary   string `json:"summary,omitempty"`
-	Link      string `json:"link,omitempty"`
-	ArticleID int    `json:"articleId,omitempty"`
+	Where   string `json:"where,omitempty"`
+	Meta    string `json:"meta,omitempty"`
+	Summary string `json:"summary,omitempty"`
+	Link    string `json:"link,omitempty"`
+	// News results only; pass to get_article.
+	ArticleID *int `json:"articleId,omitempty"`
 }
 
 type searchOut struct {
 	Query   string      `json:"query"`
 	Count   int         `json:"count"`
-	More    bool        `json:"more,omitempty"`
+	More    bool        `json:"more"`
 	Results []SearchHit `json:"results"`
 }
 
@@ -802,7 +840,9 @@ func (s *service) searchHit(r *schoolbox.SearchResult) SearchHit {
 		}
 	}
 	if r.Type == "news" {
-		hit.ArticleID, _ = strconv.Atoi(r.ID)
+		if id, err := strconv.Atoi(r.ID); err == nil {
+			hit.ArticleID = &id
+		}
 	}
 	return hit
 }
@@ -842,11 +882,20 @@ func (s *service) getAttachment(ctx context.Context, _ *mcp.CallToolRequest, a a
 	if err != nil {
 		return nil, nil, fmt.Errorf("download %q: %w", file.Name, err)
 	}
-	mime := file.Mime
+	source := fmt.Sprintf("article %d", a.ArticleID)
+	return &mcp.CallToolResult{Content: fileContent(file.Name, file.Mime, contentType, s.link(file.Links.Fetch), source, body)}, nil, nil
+}
+
+// fileContent describes a downloaded file and returns it as content suited to
+// its type: images as images, UTF-8 text as text, and anything else as an
+// embedded resource. The response's content type wins over the listed one
+// unless it is the generic octet-stream.
+func fileContent(name, listedMIME, contentType, uri, source string, body []byte) []mcp.Content {
+	mime := listedMIME
 	if mt, _, err := gomime.ParseMediaType(contentType); err == nil && mt != "application/octet-stream" {
 		mime = mt
 	}
-	summary := &mcp.TextContent{Text: fmt.Sprintf("%s (%s, %d bytes) from article %d", file.Name, mime, len(body), a.ArticleID)}
+	summary := &mcp.TextContent{Text: fmt.Sprintf("%s (%s, %d bytes) from %s", name, mime, len(body), source)}
 	var content mcp.Content
 	switch {
 	case strings.HasPrefix(mime, "image/"):
@@ -854,9 +903,7 @@ func (s *service) getAttachment(ctx context.Context, _ *mcp.CallToolRequest, a a
 	case strings.HasPrefix(mime, "text/") && utf8.Valid(body):
 		content = &mcp.TextContent{Text: string(body)}
 	default:
-		content = &mcp.EmbeddedResource{Resource: &mcp.ResourceContents{
-			URI: s.link(file.Links.Fetch), MIMEType: mime, Blob: body,
-		}}
+		content = &mcp.EmbeddedResource{Resource: &mcp.ResourceContents{URI: uri, MIMEType: mime, Blob: body}}
 	}
-	return &mcp.CallToolResult{Content: []mcp.Content{summary, content}}, nil, nil
+	return []mcp.Content{summary, content}
 }

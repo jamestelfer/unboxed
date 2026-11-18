@@ -59,11 +59,15 @@ func TestLiveEndpointsDecode(t *testing.T) {
 	for _, s := range me.Students {
 		kinds := map[FeedKind]int{}
 		var n int
+		var marked []int
 		for item, err := range c.Feed(ctx, s.ID) {
 			if err != nil {
 				t.Fatal(err)
 			}
 			kinds[item.Kind]++
+			if f := item.DueWorkFeedback; f != nil {
+				marked = append(marked, f.Assessment.ID)
+			}
 			if n++; n == 25 {
 				break
 			}
@@ -80,8 +84,59 @@ func TestLiveEndpointsDecode(t *testing.T) {
 			types[e.Meta.Variant+"/"+e.Meta.Type]++
 		}
 		t.Logf("student %d: %d calendar events, variant/type %v", s.ID, len(events), types)
+		liveDueAssessment(t, c, s.ID, events)
+		liveSubmissionDownload(t, c, s.ID, marked)
 		if n <= 10 {
 			t.Errorf("student %d: want more than one page of 10", s.ID)
 		}
 	}
+}
+
+// liveDueAssessment scrapes the first due-work assessment in events.
+func liveDueAssessment(t *testing.T, c *Client, studentID int, events []Event) {
+	t.Helper()
+	for _, e := range events {
+		if !e.IsDueWork() || e.AssessmentID == 0 {
+			continue
+		}
+		logAssessment(t, c, e.AssessmentID, studentID)
+		return
+	}
+	t.Logf("student %d: no due work with an assessment link", studentID)
+}
+
+// liveSubmissionDownload scrapes marked assessments until one lists a
+// submission file, then downloads it to confirm the session cookie covers
+// submission links as well as the file store.
+func liveSubmissionDownload(t *testing.T, c *Client, studentID int, assessmentIDs []int) {
+	t.Helper()
+	for _, id := range assessmentIDs {
+		page := logAssessment(t, c, id, studentID)
+		for _, h := range page.History {
+			if len(h.Files) == 0 {
+				continue
+			}
+			body, mime, err := c.Download(context.Background(), h.Files[0].Link, 20<<20)
+			if err != nil {
+				t.Fatalf("student %d submission download: %v", studentID, err)
+			}
+			t.Logf("student %d submission: %d bytes, %s", studentID, len(body), mime)
+			return
+		}
+	}
+	t.Logf("student %d: no marked assessment with a submission file", studentID)
+}
+
+func logAssessment(t *testing.T, c *Client, assessmentID, studentID int) AssessmentPage {
+	t.Helper()
+	page, err := c.Assessment(context.Background(), assessmentID, studentID, time.Local)
+	if err != nil {
+		t.Fatalf("student %d assessment: %v", studentID, err)
+	}
+	if page.Title == "" {
+		t.Errorf("student %d assessment: empty title", studentID)
+	}
+	t.Logf("student %d assessment: %d task files, %d grading, %d history, %d rubrics, warnings %v",
+		studentID, len(page.TaskFiles), len(page.Grading), len(page.History), len(page.Rubrics), page.Warnings)
+	return page
 }
