@@ -1,0 +1,121 @@
+[
+  {
+    "resourceId": null,
+    "title": "Year 9 English",
+    "start": "2026-11-23T09:00:00+11:00",
+    "end": "2026-11-23T09:50:00+11:00",
+    "editable": false,
+    "allDay": false,
+    "color": "#29839e",
+    "className": "source5 type1 group23962",
+    "data": {
+      "meta": {
+        "editable": false,
+        "eventId": "TT-9ENGA-1",
+        "time": "9:00am&ndash;9:50am",
+        "detail": "",
+        "location": "B12",
+        "eventTypeId": 1,
+        "eventType": "type1",
+        "variant": "event",
+        "type": "",
+        "author": "",
+        "authorId": -1,
+        "level": "source5 type1 group23962",
+        "completed": false,
+        "seriesId": null
+      },
+      "links": {
+        "category": {
+          "id": 23962,
+          "name": "10 English 2A"
+        }
+      },
+      "styles": {
+        "visible": ""
+      },
+      "attendance": {
+        "hasAttendance": false,
+        "status": {
+          "current": null
+        }
+      },
+      "classAttendance": {
+        "url": null,
+        "target": null
+      }
+    }
+  },
+  {
+    "title": "9 English A (9EngA)\n3 - Persuasive essay",
+    "start": "2026-11-25",
+    "end": "",
+    "editable": false,
+    "allDay": true,
+    "className": "source2 type6 personal",
+    "resourceId": 9182,
+    "data": {
+      "meta": {
+        "eventId": 9182,
+        "time": "",
+        "title": "3 - Persuasive essay",
+        "detail": "<h4>Submit via the <strong>task page</strong>.</h4>",
+        "location": "",
+        "eventType": "type6",
+        "variant": "event",
+        "type": "Due Work",
+        "author": "",
+        "authorId": -1,
+        "level": "source2 type6 personal",
+        "completed": false,
+        "folderName": "9 English A (9EngA)",
+        "folderId": 23962,
+        "workType": "Homework",
+        "workTypeId": 3,
+        "weighted": 0,
+        "assessmentType": "task",
+        "editable": false
+      },
+      "links": [],
+      "styles": {
+        "visible": true
+      },
+      "attendance": {
+        "icon": false,
+        "status": false,
+        "requestButton": false,
+        "listButton": false
+      },
+      "custom": {
+        "modifyLink": false,
+        "moreDetailsLink": "/learning/assessments/9182/201?returnUrl=L2xlYXJuaW5n"
+      }
+    }
+  },
+  {
+    "title": "Athletics carnival",
+    "start": "2026-11-27",
+    "end": "2026-11-28",
+    "editable": false,
+    "allDay": true,
+    "color": "#555555",
+    "className": "source1 type1 campus1",
+    "data": {
+      "meta": {
+        "eventId": 178,
+        "detail": "",
+        "location": "Oval",
+        "eventTypeId": 3,
+        "variant": "event",
+        "type": "Event"
+      },
+      "links": {
+        "category": {
+          "id": -1,
+          "name": ""
+        },
+        "path": ""
+      }
+    }
+  }
+]

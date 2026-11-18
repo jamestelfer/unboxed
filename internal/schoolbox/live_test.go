@@ -6,6 +6,7 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 )
 
 // Run with: set -a; source .env.local; set +a; go test -tags live -run Live ./internal/schoolbox
@@ -55,6 +56,17 @@ func TestLiveEndpointsDecode(t *testing.T) {
 			}
 		}
 		t.Logf("student %d: %d items, kinds %v", s.ID, n, kinds)
+
+		now := time.Now()
+		events, err := c.Calendar(ctx, s.ID, now, now.AddDate(0, 0, 14))
+		if err != nil {
+			t.Fatalf("student %d calendar: %v", s.ID, err)
+		}
+		types := map[string]int{}
+		for _, e := range events {
+			types[e.Meta.Variant+"/"+e.Meta.Type]++
+		}
+		t.Logf("student %d: %d calendar events, variant/type %v", s.ID, len(events), types)
 		if n <= 10 {
 			t.Errorf("student %d: want more than one page of 10", s.ID)
 		}

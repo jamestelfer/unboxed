@@ -79,7 +79,7 @@ get() {
 }
 
 main() {
-  local sub child
+  local sub child start end
   mkdir -p "${OUT}"
   load_token
   if [[ -z "${SCHOOLBOX_URL:-}" ]]; then
@@ -106,6 +106,9 @@ main() {
     get "child_${child}_evidence" "/learning/evidenceFeed/user/${child}"
     get "child_${child}_pastoral" "/pastoral/student/${child}?limit=5"
     get "child_${child}_user" "/api/user/${child}"
+    start="$(date +%s)"
+    end="$(( start + 14 * 86400 ))"
+    get "child_${child}_calendar" "/calendar/ajax/full?userId=${child}&start=${start}&end=${end}"
   done
 }
 
