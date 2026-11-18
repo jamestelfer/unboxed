@@ -2,6 +2,8 @@
 #
 # Read-only probe of the Schoolbox API. Prints response shapes (keys, types,
 # counts) and HTTP status; never prints the token. Raw bodies go to probe-out/.
+#
+# Reads JWT and SCHOOLBOX_URL from the environment (direnv provides them).
 
 set -euo pipefail
 
@@ -14,23 +16,11 @@ err() {
 }
 
 load_token() {
-  local name value
-  set -a
-  # shellcheck disable=SC1091
-  source "${ROOT}/.env.local"
-  set +a
-  # Variable name in .env.local is unknown to the script author; pick the first JWT-shaped value.
-  while IFS= read -r name; do
-    value="${!name-}"
-    if [[ "${value}" =~ ^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$ ]]; then
-      TOKEN="${value}"
-      echo "using token from \$${name}"
-      return 0
-    fi
-  done < <(grep -oE '^(export +)?[A-Za-z_][A-Za-z0-9_]*=' "${ROOT}/.env.local" \
-             | sed -E 's/^export +//; s/=$//')
-  err "no JWT-shaped value found in .env.local"
-  return 1
+  if [[ -z "${JWT:-}" ]]; then
+    err "JWT is not set; load the project environment with direnv"
+    return 1
+  fi
+  TOKEN="${JWT}"
 }
 
 b64url_decode() {
@@ -79,11 +69,11 @@ get() {
 }
 
 main() {
-  local sub child
+  local sub child start end
   mkdir -p "${OUT}"
   load_token
   if [[ -z "${SCHOOLBOX_URL:-}" ]]; then
-    err "SCHOOLBOX_URL is not set (e.g. https://schoolbox.example.edu.au)"
+    err "SCHOOLBOX_URL is not set; load the project environment with direnv"
     return 1
   fi
   readonly BASE_URL="${SCHOOLBOX_URL%/}"
@@ -106,6 +96,9 @@ main() {
     get "child_${child}_evidence" "/learning/evidenceFeed/user/${child}"
     get "child_${child}_pastoral" "/pastoral/student/${child}?limit=5"
     get "child_${child}_user" "/api/user/${child}"
+    start="$(date +%s)"
+    end="$(( start + 14 * 86400 ))"
+    get "child_${child}_calendar" "/calendar/ajax/full?userId=${child}&start=${start}&end=${end}"
   done
 }
 

@@ -38,6 +38,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		ArgsUsage: " ",
 		Writer:    stdout,
 		ErrWriter: stderr,
+		Commands:  []*cli.Command{mcpCommand()},
 		Action: func(_ context.Context, cmd *cli.Command) error {
 			if cmd.Args().Present() {
 				return cli.Exit(
