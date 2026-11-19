@@ -57,7 +57,7 @@ func TestGetAssessment(t *testing.T) {
 		{"assessment_not_submitted.html", 202, 9104},
 		{"assessment_submitted.html", 202, 9103},
 		{"assessment_resubmission.html", 201, 9102},
-		{"assessment_rubric_marked.html", 201, 9102},
+		{"assessment_rubric_marked.html", 202, 9110},
 	} {
 		t.Run(tc.fixture, func(t *testing.T) {
 			s, _ := connect(t, map[string]string{fmt.Sprintf("/learning/assessments/%d/%d", tc.id, tc.student): tc.fixture})
@@ -204,7 +204,8 @@ func TestDueWorkAssessmentIDRoundTrips(t *testing.T) {
 
 func withAssessmentFiles(t *testing.T) (*mcp.ClientSession, *fixtures) {
 	t.Helper()
-	s, fx := connect(t, map[string]string{resubmissionPath: "assessment_resubmission.html"})
+	// The Kami annotation is renamed so it does not share the submission's name.
+	s, fx := connect(t, map[string]string{resubmissionPath: "assessment_kami.html"})
 	file := func(contentType, body string) func() *http.Response {
 		return func() *http.Response {
 			return &http.Response{
@@ -269,7 +270,8 @@ func TestGetAssessmentFileOnlyFetchesListedFiles(t *testing.T) {
 }
 
 func TestGetAssessmentFileRefusesKami(t *testing.T) {
-	s, fx := connect(t, map[string]string{resubmissionPath: "assessment_rubric_marked.html"})
+	// The Kami annotation is renamed so it does not share the submission's name.
+	s, fx := connect(t, map[string]string{resubmissionPath: "assessment_kami.html"})
 
 	msg := call(t, s, "get_assessment_file", map[string]any{"student_id": 201, "assessment_id": 9102, "name": "Annotated plan"}, nil)
 

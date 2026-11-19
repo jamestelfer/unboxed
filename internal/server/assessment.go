@@ -103,11 +103,12 @@ type Descriptor struct {
 	Selected bool     `json:"selected,omitzero"`
 }
 
-// HistoryEntry is a feedback entry or a student submission, in page order.
+// HistoryEntry is a feedback entry, a student submission or the student's
+// self-reflection, in page order.
 type HistoryEntry struct {
-	// feedback or submission.
+	// feedback, submission or self-reflection.
 	Kind string `json:"kind"`
-	// Teacher for feedback, student for a submission.
+	// Teacher for feedback, student for a submission or self-reflection.
 	By     string `json:"by"`
 	At     string `json:"at,omitempty"`
 	Action string `json:"action,omitempty"`
@@ -188,7 +189,7 @@ func (s *service) assessmentOut(id int, student schoolbox.Person, p *schoolbox.A
 		out.Rubric = append(out.Rubric, rubricOut(&p.Rubrics[i]))
 	}
 	for i := range p.History {
-		out.History = append(out.History, s.historyOut(&p.History[i]))
+		out.History = append(out.History, s.historyOut(&p.History[i], student.FullName))
 	}
 	return out
 }
@@ -205,13 +206,18 @@ func (s *service) feedbackOut(f *schoolbox.AssessmentFeedback) Feedback {
 	}
 }
 
-func (s *service) historyOut(e *schoolbox.HistoryEntry) HistoryEntry {
-	if e.Kind == schoolbox.HistoryFeedback && e.Feedback != nil {
+// historyOut maps one history entry. A self-reflection byline names no one,
+// so it is attributed to the student whose page it is.
+func (s *service) historyOut(e *schoolbox.HistoryEntry, student string) HistoryEntry {
+	switch {
+	case e.Kind == schoolbox.HistoryFeedback && e.Feedback != nil:
 		f := s.feedbackOut(e.Feedback)
 		return HistoryEntry{
 			Kind: e.Kind, By: f.Teacher, At: f.At, Action: f.Action,
 			Mark: f.Mark, Score: f.Score, Comment: f.Comment, Files: f.Files,
 		}
+	case e.Kind == schoolbox.HistorySelfReflection:
+		return HistoryEntry{Kind: e.Kind, By: student, At: s.timestamp(e.At), Comment: htmlToText(e.CommentHTML)}
 	}
 	return HistoryEntry{Kind: e.Kind, By: e.By, At: s.timestamp(e.At), Files: s.files(e.Files)}
 }

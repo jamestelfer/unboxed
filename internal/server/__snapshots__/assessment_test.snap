@@ -508,60 +508,52 @@
 
 [TestGetAssessment/assessment_rubric_marked.html - 1]
 {
- "assessmentId": 9102,
- "due": "2026-10-02T00:00:00+10:00",
+ "assessmentId": 9110,
+ "due": "2026-09-07T10:00:00+10:00",
  "grading": [
   {
-   "action": "Resubmission required",
-   "at": "2026-10-27T20:13:00+11:00",
-   "comment": "The work shows a clear grasp of the main ideas.",
-   "files": [
-    {
-     "kind": "kami",
-     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "name": "Annotated plan",
-     "retrievable": false,
-     "url": "https://school.example/learning/kami/7201"
-    }
-   ],
-   "teacher": "Mr Dana Marsh"
+   "action": "Feedback",
+   "at": "2026-10-25T21:20:00+11:00",
+   "comment": "Excellent work, a well-earned A grade; your speaking time was 2min 10sec. Your argument was layered and carefully built, and it fully earned the content marks. Your use of rhetorical questions, concrete examples and a measured tone made the speech persuasive. You also spoke with conviction and projected well.\n\nFor future speeches, aim for more eye contact and more variety in pitch and pace. This was one of the strongest speeches in the year level, and it would suit a debating competition. Keep building on this work next year.\n\nYour allocation of marks was 9, 10, 10 and 9.",
+   "mark": "38 / 40",
+   "percent": 95,
+   "teacher": "Ms Kim Ward"
   }
  ],
  "history": [
   {
-   "at": "2026-10-29T14:21:00+11:00",
-   "by": "Alex Parent",
+   "at": "2026-09-11T11:35:00+10:00",
+   "by": "Sam Parent",
    "files": [
     {
      "kind": "submission",
-     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "name": "hike_plan_alex",
+     "mime": "text/html",
+     "name": "Online Submission",
      "retrievable": true,
-     "url": "https://school.example/learning/assessments/9102/201/responses/7002/files/7102/download"
+     "url": "https://school.example/learning/assessments/9110/202/responses/7003/files/7103/download"
     }
    ],
    "kind": "submission"
   },
   {
-   "action": "Resubmission required",
-   "at": "2026-10-27T20:13:00+11:00",
-   "by": "Mr Dana Marsh",
-   "comment": "The work shows a clear grasp of the main ideas.",
-   "files": [
-    {
-     "kind": "kami",
-     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "name": "Annotated plan",
-     "retrievable": false,
-     "url": "https://school.example/learning/kami/7201"
-    }
-   ],
-   "kind": "feedback"
+   "at": "2026-09-11T11:35:00+10:00",
+   "by": "Sam Parent",
+   "kind": "self-reflection"
+  },
+  {
+   "action": "Feedback",
+   "at": "2026-10-25T21:20:00+11:00",
+   "by": "Ms Kim Ward",
+   "comment": "Excellent work, a well-earned A grade; your speaking time was 2min 10sec. Your argument was layered and carefully built, and it fully earned the content marks. Your use of rhetorical questions, concrete examples and a measured tone made the speech persuasive. You also spoke with conviction and projected well.\n\nFor future speeches, aim for more eye contact and more variety in pitch and pace. This was one of the strongest speeches in the year level, and it would suit a debating competition. Keep building on this work next year.\n\nYour allocation of marks was 9, 10, 10 and 9.",
+   "kind": "feedback",
+   "mark": "38 / 40",
+   "percent": 95
   }
  ],
- "link": "https://school.example/learning/assessments/9102/201",
+ "link": "https://school.example/learning/assessments/9110/202",
  "markScheme": {
-  "mode": "percent"
+  "mode": "raw",
+  "totalMark": 40
  },
  "rubric": [
   {
@@ -571,245 +563,173 @@
       {
        "descriptors": [
         {
-         "level": "Well Above Standard",
-         "points": 4,
-         "text": "Comprehensive, accurate, and insightful; includes context and purpose clearly"
+         "level": "Excellent",
+         "points": 10,
+         "text": "Delivery is confident and varied, holding attention and stressing each key point."
         },
         {
-         "level": "Above Standard",
-         "points": 3,
+         "level": "Strong",
+         "points": 8,
          "selected": true,
-         "text": "Detailed and mostly accurate; minor gaps"
+         "text": "Delivery is clear and well paced, stressing most key points."
         },
         {
-         "level": "At Standard",
-         "points": 2,
-         "text": "Adequate information; meets basic requirements"
-        },
-        {
-         "level": "Below Standard",
-         "points": 1,
-         "text": "Limited detail; lacks clarity or accuracy"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing or incorrect"
-        }
-       ],
-       "name": "Background Information"
-      },
-      {
-       "descriptors": [
-        {
-         "level": "Well Above Standard",
-         "points": 8,
-         "text": "Balanced, nutritious, cost-effective; includes quantities and preparation notes"
-        },
-        {
-         "level": "Above Standard",
+         "level": "Sound",
          "points": 6,
-         "text": "Mostly balanced and practical; minor omissions"
+         "text": "Delivery is mostly clear, with some uneven pacing."
         },
         {
-         "level": "At Standard",
+         "level": "Developing",
          "points": 4,
-         "text": "Basic plan with essential items; meets minimum"
+         "text": "Delivery is often unclear or rushed."
         },
         {
-         "level": "Below Standard",
+         "level": "Beginning",
          "points": 2,
-         "text": "Incomplete or impractical; lacks key items"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing or irrelevant"
+         "text": "Delivery is hard to follow throughout."
         }
        ],
-       "name": "Menu Plan & Shopping List"
+       "name": "Delivery"
       },
       {
        "descriptors": [
         {
-         "level": "Well Above Standard",
-         "points": 4,
-         "text": "Complete, organized, and tailored to conditions; includes safety gear"
+         "level": "Excellent",
+         "points": 10,
+         "selected": true,
+         "text": "The argument is original, well supported and anticipates counterpoints."
         },
         {
-         "level": "Above Standard",
-         "points": 3,
-         "text": "Mostly complete; minor omissions"
-        },
-        {
-         "level": "At Standard",
-         "points": 2,
-         "text": "Basic gear listed; meets minimum"
-        },
-        {
-         "level": "Below Standard",
-         "points": 1,
-         "text": "Incomplete or poorly organized"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing"
-        }
-       ],
-       "name": "Gear List"
-      },
-      {
-       "descriptors": [
-        {
-         "level": "Well Above Standard",
-         "points": 4,
-         "text": "Clear itinerary, roles, and responsibilities; well-structured"
-        },
-        {
-         "level": "Above Standard",
-         "points": 3,
-         "text": "Mostly clear; minor gaps in roles or timing"
-        },
-        {
-         "level": "At Standard",
-         "points": 2,
-         "text": "Basic details provided; meets minimum"
-        },
-        {
-         "level": "Below Standard",
-         "points": 1,
-         "text": "Limited or unclear; lacks structure"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing"
-        }
-       ],
-       "name": "Travel & Group Details"
-      },
-      {
-       "descriptors": [
-        {
-         "level": "Well Above Standard",
+         "level": "Strong",
          "points": 8,
-         "text": "Detailed map, distances, elevation, and timing; contingency plans included"
+         "text": "The argument is clear and supported with relevant evidence."
         },
         {
-         "level": "Above Standard",
+         "level": "Sound",
          "points": 6,
-         "text": "Mostly detailed; minor omissions"
+         "text": "The argument is clear but relies on obvious evidence."
         },
         {
-         "level": "At Standard",
+         "level": "Developing",
          "points": 4,
-         "text": "Basic route info; meets minimum"
+         "text": "The argument is partly developed and loosely supported."
         },
         {
-         "level": "Below Standard",
+         "level": "Beginning",
          "points": 2,
-         "text": "Limited or unclear; lacks key details"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing"
+         "text": "The argument is unclear or unsupported."
         }
        ],
-       "name": "Route Details"
+       "name": "Argument"
       },
       {
        "descriptors": [
         {
-         "level": "Well Above Standard",
+         "level": "Excellent",
+         "points": 10,
+         "selected": true,
+         "text": "Persuasive techniques are varied and used to strong effect."
+        },
+        {
+         "level": "Strong",
+         "points": 8,
+         "text": "A range of persuasive techniques is used effectively."
+        },
+        {
+         "level": "Sound",
+         "points": 6,
+         "text": "Some persuasive techniques are used with partial effect."
+        },
+        {
+         "level": "Developing",
          "points": 4,
-         "text": "Complete list with multiple contact points and relevant info"
+         "text": "Few persuasive techniques are used, with limited effect."
         },
         {
-         "level": "Above Standard",
-         "points": 3,
-         "text": "Mostly complete; minor omissions"
-        },
-        {
-         "level": "At Standard",
+         "level": "Beginning",
          "points": 2,
-         "text": "Basic contacts provided"
-        },
-        {
-         "level": "Below Standard",
-         "points": 1,
-         "text": "Limited or unclear"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing"
+         "text": "Persuasive techniques are absent or misused."
         }
        ],
-       "name": "Emergency Contacts"
+       "name": "Language features"
       },
       {
        "descriptors": [
         {
-         "level": "Well Above Standard",
+         "level": "Excellent",
+         "points": 10,
+         "text": "The speech is fully planned, rehearsed and refined through feedback."
+        },
+        {
+         "level": "Strong",
+         "points": 8,
+         "selected": true,
+         "text": "The speech is well planned and rehearsed."
+        },
+        {
+         "level": "Sound",
+         "points": 6,
+         "text": "The speech is planned, with some rehearsal."
+        },
+        {
+         "level": "Developing",
          "points": 4,
-         "text": "Comprehensive risk analysis with mitigation strategies; well-documented"
+         "text": "The speech shows limited planning."
         },
         {
-         "level": "Above Standard",
-         "points": 3,
-         "text": "Detailed with minor gaps"
-        },
-        {
-         "level": "At Standard",
+         "level": "Beginning",
          "points": 2,
-         "text": "Basic risks identified; meets minimum"
-        },
-        {
-         "level": "Below Standard",
-         "points": 1,
-         "text": "Limited or unclear; lacks strategies"
-        },
-        {
-         "level": "Well Below Standard",
-         "points": 0,
-         "text": "Missing"
+         "text": "The speech shows little planning."
         }
        ],
-       "name": "Risk Management"
+       "name": "Planning"
+      },
+      {
+       "descriptors": [
+        {
+         "level": "Excellent",
+         "selected": true,
+         "text": "I seek out challenging topics and test new approaches in my writing."
+        },
+        {
+         "level": "Strong",
+         "text": "I take on challenging topics when the chance arises."
+        },
+        {
+         "level": "Sound",
+         "text": "I try new approaches when prompted."
+        },
+        {
+         "level": "Developing",
+         "text": "I prefer familiar approaches but am open to trying new ones."
+        },
+        {
+         "level": "Beginning",
+         "text": "I keep to familiar topics and approaches."
+        }
+       ],
+       "name": "Ambition"
       }
      ],
-     "mark": "30 / 36",
-     "name": "Planning"
+     "name": "Year 7 Persuasive Speech"
     }
    ],
    "levels": [
-    "Well Above Standard",
-    "Above Standard",
-    "At Standard",
-    "Below Standard",
-    "Well Below Standard"
+    "Excellent",
+    "Strong",
+    "Sound",
+    "Developing",
+    "Beginning"
    ],
-   "mark": "30 / 36",
-   "title": "2026 hike-planning-rubric"
+   "mark": "36 / 40",
+   "title": "Persuasive Speech - Rubric"
   }
  ],
- "student": "Alex Parent",
- "subject": "9 Outdoor Education 2A (9OuEd2A)",
+ "student": "Sam Parent",
+ "subject": "7 English B (7Eng1B,7Eng2B)",
  "submissions": "This assessment no longer accepts submissions.",
- "taskFiles": [
-  {
-   "kind": "task",
-   "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-   "name": "Hike Student Planning Assignment.docx",
-   "retrievable": true,
-   "size": "476.79 KB",
-   "url": "https://school.example/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx"
-  }
- ],
- "title": "Overnight Hike Planning Task",
- "workType": "Assessment Task"
+ "title": "Persuasive Speech (Final Copy)",
+ "workType": "Assessment Task includes Self-reflection"
 }
 ---
 

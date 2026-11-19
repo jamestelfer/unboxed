@@ -649,62 +649,51 @@
 [TestAssessmentPages/assessment_rubric_marked.html - 1]
 {
  "DescriptionHTML": "",
- "Due": "2026-10-02T00:00:00+10:00",
+ "Due": "2026-09-07T10:00:00+10:00",
  "Grading": [
   {
-   "Action": "Resubmission required",
-   "At": "2026-10-27T20:13:00+11:00",
-   "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
-   "Files": [
-    {
-     "Kind": "kami",
-     "Link": "/learning/kami/7201",
-     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "Name": "Annotated plan",
-     "Size": ""
-    }
-   ],
-   "Mark": "",
-   "Teacher": "Mr Dana Marsh"
+   "Action": "Feedback",
+   "At": "2026-10-25T21:20:00+11:00",
+   "CommentHTML": "<p>Excellent work, a well-earned A grade; your speaking time was 2min 10sec. Your argument was layered and carefully built, and it fully earned the content marks. Your use of rhetorical questions, concrete examples and a measured tone made the speech persuasive. You also spoke with conviction and projected well.<br/><br/>For future speeches, aim for more eye contact and more variety in pitch and pace. This was one of the strongest speeches in the year level, and it would suit a debating competition. Keep building on this work next year.<br/><br/>Your allocation of marks was 9, 10, 10 and 9.</p>",
+   "Files": [],
+   "Mark": "38 / 40",
+   "Teacher": "Ms Kim Ward"
   }
  ],
  "History": [
   {
-   "At": "2026-10-29T14:21:00+11:00",
-   "By": "Alex Parent",
+   "At": "2026-09-11T11:35:00+10:00",
+   "By": "Sam Parent",
    "Files": [
     {
      "Kind": "submission",
-     "Link": "/learning/assessments/9102/201/responses/7002/files/7102/download",
-     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "Name": "hike_plan_alex",
+     "Link": "/learning/assessments/9110/202/responses/7003/files/7103/download",
+     "MIME": "text/html",
+     "Name": "Online Submission",
      "Size": ""
     }
    ],
    "Kind": "submission"
   },
   {
+   "At": "2026-09-11T11:35:00+10:00",
+   "Kind": "self-reflection"
+  },
+  {
    "Feedback": {
-    "Action": "Resubmission required",
-    "At": "2026-10-27T20:13:00+11:00",
-    "CommentHTML": "<p>The work shows a clear grasp of the main ideas.</p>",
-    "Files": [
-     {
-      "Kind": "kami",
-      "Link": "/learning/kami/7201",
-      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "Name": "Annotated plan",
-      "Size": ""
-     }
-    ],
-    "Mark": "",
-    "Teacher": "Mr Dana Marsh"
+    "Action": "Feedback",
+    "At": "2026-10-25T21:20:00+11:00",
+    "CommentHTML": "<p>Excellent work, a well-earned A grade; your speaking time was 2min 10sec. Your argument was layered and carefully built, and it fully earned the content marks. Your use of rhetorical questions, concrete examples and a measured tone made the speech persuasive. You also spoke with conviction and projected well.<br/><br/>For future speeches, aim for more eye contact and more variety in pitch and pace. This was one of the strongest speeches in the year level, and it would suit a debating competition. Keep building on this work next year.<br/><br/>Your allocation of marks was 9, 10, 10 and 9.</p>",
+    "Files": [],
+    "Mark": "38 / 40",
+    "Teacher": "Ms Kim Ward"
    },
    "Kind": "feedback"
   }
  ],
  "MarkScheme": {
-  "Mode": "percent"
+  "Mode": "raw",
+  "TotalMark": 40
  },
  "Rubrics": [
   {
@@ -714,278 +703,200 @@
       {
        "Descriptors": [
         {
-         "Level": "<p>Well Above Standard</p>\n",
-         "Points": 4,
+         "Level": "<p>Excellent</p>\n",
+         "Points": 10,
          "Selected": false,
-         "Text": "<p>Comprehensive, accurate, and insightful; includes context and purpose clearly</p>\n"
+         "Text": "<p>Delivery is confident and varied, holding attention and stressing each key point.</p>\n"
         },
         {
-         "Level": "<p>Above Standard</p>\n",
-         "Points": 3,
+         "Level": "<p>Strong</p>\n",
+         "Points": 8,
          "Selected": true,
-         "Text": "<p>Detailed and mostly accurate; minor gaps</p>\n"
+         "Text": "<p>Delivery is clear and well paced, stressing most key points.</p>\n"
         },
         {
-         "Level": "<p>At Standard</p>\n",
-         "Points": 2,
-         "Selected": false,
-         "Text": "<p>Adequate information; meets basic requirements</p>\n"
-        },
-        {
-         "Level": "<p>Below Standard</p>\n",
-         "Points": 1,
-         "Selected": false,
-         "Text": "<p>Limited detail; lacks clarity or accuracy</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing or incorrect</p>\n"
-        }
-       ],
-       "Name": "<p>Background Information</p>\n"
-      },
-      {
-       "Descriptors": [
-        {
-         "Level": "<p>Well Above Standard</p>\n",
-         "Points": 8,
-         "Selected": false,
-         "Text": "<p>Balanced, nutritious, cost-effective; includes quantities and preparation notes</p>\n"
-        },
-        {
-         "Level": "<p>Above Standard</p>\n",
+         "Level": "<p>Sound</p>\n",
          "Points": 6,
          "Selected": false,
-         "Text": "<p>Mostly balanced and practical; minor omissions</p>\n"
+         "Text": "<p>Delivery is mostly clear, with some uneven pacing.</p>\n"
         },
         {
-         "Level": "<p>At Standard</p>\n",
+         "Level": "<p>Developing</p>\n",
          "Points": 4,
          "Selected": false,
-         "Text": "<p>Basic plan with essential items; meets minimum</p>\n"
+         "Text": "<p>Delivery is often unclear or rushed.</p>\n"
         },
         {
-         "Level": "<p>Below Standard</p>\n",
+         "Level": "<p>Beginning</p>\n",
          "Points": 2,
          "Selected": false,
-         "Text": "<p>Incomplete or impractical; lacks key items</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing or irrelevant</p>\n"
+         "Text": "<p>Delivery is hard to follow throughout.</p>\n"
         }
        ],
-       "Name": "<p>Menu Plan &amp; Shopping List</p>\n"
+       "Name": "<p>Delivery</p>\n"
       },
       {
        "Descriptors": [
         {
-         "Level": "<p>Well Above Standard</p>\n",
-         "Points": 4,
-         "Selected": false,
-         "Text": "<p>Complete, organized, and tailored to conditions; includes safety gear</p>\n"
+         "Level": "<p>Excellent</p>\n",
+         "Points": 10,
+         "Selected": true,
+         "Text": "<p>The argument is original, well supported and anticipates counterpoints.</p>\n"
         },
         {
-         "Level": "<p>Above Standard</p>\n",
-         "Points": 3,
-         "Selected": false,
-         "Text": "<p>Mostly complete; minor omissions</p>\n"
-        },
-        {
-         "Level": "<p>At Standard</p>\n",
-         "Points": 2,
-         "Selected": false,
-         "Text": "<p>Basic gear listed; meets minimum</p>\n"
-        },
-        {
-         "Level": "<p>Below Standard</p>\n",
-         "Points": 1,
-         "Selected": false,
-         "Text": "<p>Incomplete or poorly organized</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing</p>\n"
-        }
-       ],
-       "Name": "<p>Gear List</p>\n"
-      },
-      {
-       "Descriptors": [
-        {
-         "Level": "<p>Well Above Standard</p>\n",
-         "Points": 4,
-         "Selected": false,
-         "Text": "<p>Clear itinerary, roles, and responsibilities; well-structured</p>\n"
-        },
-        {
-         "Level": "<p>Above Standard</p>\n",
-         "Points": 3,
-         "Selected": false,
-         "Text": "<p>Mostly clear; minor gaps in roles or timing</p>\n"
-        },
-        {
-         "Level": "<p>At Standard</p>\n",
-         "Points": 2,
-         "Selected": false,
-         "Text": "<p>Basic details provided; meets minimum</p>\n"
-        },
-        {
-         "Level": "<p>Below Standard</p>\n",
-         "Points": 1,
-         "Selected": false,
-         "Text": "<p>Limited or unclear; lacks structure</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing</p>\n"
-        }
-       ],
-       "Name": "<p>Travel &amp; Group Details</p>\n"
-      },
-      {
-       "Descriptors": [
-        {
-         "Level": "<p>Well Above Standard</p>\n",
+         "Level": "<p>Strong</p>\n",
          "Points": 8,
          "Selected": false,
-         "Text": "<p>Detailed map, distances, elevation, and timing; contingency plans included</p>\n"
+         "Text": "<p>The argument is clear and supported with relevant evidence.</p>\n"
         },
         {
-         "Level": "<p>Above Standard</p>\n",
+         "Level": "<p>Sound</p>\n",
          "Points": 6,
          "Selected": false,
-         "Text": "<p>Mostly detailed; minor omissions</p>\n"
+         "Text": "<p>The argument is clear but relies on obvious evidence.</p>\n"
         },
         {
-         "Level": "<p>At Standard</p>\n",
+         "Level": "<p>Developing</p>\n",
          "Points": 4,
          "Selected": false,
-         "Text": "<p>Basic route info; meets minimum</p>\n"
+         "Text": "<p>The argument is partly developed and loosely supported.</p>\n"
         },
         {
-         "Level": "<p>Below Standard</p>\n",
+         "Level": "<p>Beginning</p>\n",
          "Points": 2,
          "Selected": false,
-         "Text": "<p>Limited or unclear; lacks key details</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing</p>\n"
+         "Text": "<p>The argument is unclear or unsupported.</p>\n"
         }
        ],
-       "Name": "<p>Route Details</p>\n"
+       "Name": "<p>Argument</p>\n"
       },
       {
        "Descriptors": [
         {
-         "Level": "<p>Well Above Standard</p>\n",
+         "Level": "<p>Excellent</p>\n",
+         "Points": 10,
+         "Selected": true,
+         "Text": "<p>Persuasive techniques are varied and used to strong effect.</p>\n"
+        },
+        {
+         "Level": "<p>Strong</p>\n",
+         "Points": 8,
+         "Selected": false,
+         "Text": "<p>A range of persuasive techniques is used effectively.</p>\n"
+        },
+        {
+         "Level": "<p>Sound</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>Some persuasive techniques are used with partial effect.</p>\n"
+        },
+        {
+         "Level": "<p>Developing</p>\n",
          "Points": 4,
          "Selected": false,
-         "Text": "<p>Complete list with multiple contact points and relevant info</p>\n"
+         "Text": "<p>Few persuasive techniques are used, with limited effect.</p>\n"
         },
         {
-         "Level": "<p>Above Standard</p>\n",
-         "Points": 3,
-         "Selected": false,
-         "Text": "<p>Mostly complete; minor omissions</p>\n"
-        },
-        {
-         "Level": "<p>At Standard</p>\n",
+         "Level": "<p>Beginning</p>\n",
          "Points": 2,
          "Selected": false,
-         "Text": "<p>Basic contacts provided</p>\n"
-        },
-        {
-         "Level": "<p>Below Standard</p>\n",
-         "Points": 1,
-         "Selected": false,
-         "Text": "<p>Limited or unclear</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing</p>\n"
+         "Text": "<p>Persuasive techniques are absent or misused.</p>\n"
         }
        ],
-       "Name": "<p>Emergency Contacts</p>\n"
+       "Name": "<p>Language features</p>\n"
       },
       {
        "Descriptors": [
         {
-         "Level": "<p>Well Above Standard</p>\n",
+         "Level": "<p>Excellent</p>\n",
+         "Points": 10,
+         "Selected": false,
+         "Text": "<p>The speech is fully planned, rehearsed and refined through feedback.</p>\n"
+        },
+        {
+         "Level": "<p>Strong</p>\n",
+         "Points": 8,
+         "Selected": true,
+         "Text": "<p>The speech is well planned and rehearsed.</p>\n"
+        },
+        {
+         "Level": "<p>Sound</p>\n",
+         "Points": 6,
+         "Selected": false,
+         "Text": "<p>The speech is planned, with some rehearsal.</p>\n"
+        },
+        {
+         "Level": "<p>Developing</p>\n",
          "Points": 4,
          "Selected": false,
-         "Text": "<p>Comprehensive risk analysis with mitigation strategies; well-documented</p>\n"
+         "Text": "<p>The speech shows limited planning.</p>\n"
         },
         {
-         "Level": "<p>Above Standard</p>\n",
-         "Points": 3,
-         "Selected": false,
-         "Text": "<p>Detailed with minor gaps</p>\n"
-        },
-        {
-         "Level": "<p>At Standard</p>\n",
+         "Level": "<p>Beginning</p>\n",
          "Points": 2,
          "Selected": false,
-         "Text": "<p>Basic risks identified; meets minimum</p>\n"
-        },
-        {
-         "Level": "<p>Below Standard</p>\n",
-         "Points": 1,
-         "Selected": false,
-         "Text": "<p>Limited or unclear; lacks strategies</p>\n"
-        },
-        {
-         "Level": "<p>Well Below Standard</p>\n",
-         "Points": 0,
-         "Selected": false,
-         "Text": "<p>Missing</p>\n"
+         "Text": "<p>The speech shows little planning.</p>\n"
         }
        ],
-       "Name": "<p>Risk Management</p>\n"
+       "Name": "<p>Planning</p>\n"
+      },
+      {
+       "Descriptors": [
+        {
+         "Level": "<p>Excellent</p>\n",
+         "Points": null,
+         "Selected": true,
+         "Text": "<p>I seek out challenging topics and test new approaches in my writing.</p>\n"
+        },
+        {
+         "Level": "<p>Strong</p>\n",
+         "Points": null,
+         "Selected": false,
+         "Text": "<p>I take on challenging topics when the chance arises.</p>\n"
+        },
+        {
+         "Level": "<p>Sound</p>\n",
+         "Points": null,
+         "Selected": false,
+         "Text": "<p>I try new approaches when prompted.</p>\n"
+        },
+        {
+         "Level": "<p>Developing</p>\n",
+         "Points": null,
+         "Selected": false,
+         "Text": "<p>I prefer familiar approaches but am open to trying new ones.</p>\n"
+        },
+        {
+         "Level": "<p>Beginning</p>\n",
+         "Points": null,
+         "Selected": false,
+         "Text": "<p>I keep to familiar topics and approaches.</p>\n"
+        }
+       ],
+       "Name": "<p>Ambition</p>\n"
       }
      ],
-     "Mark": "30 / 36",
-     "Name": "<p>Planning</p>\n"
+     "Mark": "",
+     "Name": "<p>Year 7 Persuasive Speech</p>\n"
     }
    ],
    "Levels": [
-    "<p>Well Above Standard</p>\n",
-    "<p>Above Standard</p>\n",
-    "<p>At Standard</p>\n",
-    "<p>Below Standard</p>\n",
-    "<p>Well Below Standard</p>\n"
+    "<p>Excellent</p>\n",
+    "<p>Strong</p>\n",
+    "<p>Sound</p>\n",
+    "<p>Developing</p>\n",
+    "<p>Beginning</p>\n"
    ],
-   "Mark": "30 / 36",
-   "Title": "2026 hike-planning-rubric"
+   "Mark": "36 / 40",
+   "Title": "Persuasive Speech - Rubric"
   }
  ],
- "Subject": "9 Outdoor Education 2A (9OuEd2A)",
+ "Subject": "7 English B (7Eng1B,7Eng2B)",
  "Submissions": "This assessment no longer accepts submissions.",
- "TaskFiles": [
-  {
-   "Kind": "task",
-   "Link": "/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx",
-   "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-   "Name": "Hike Student Planning Assignment.docx",
-   "Size": "476.79 KB"
-  }
- ],
- "Title": "Overnight Hike Planning Task",
+ "TaskFiles": [],
+ "Title": "Persuasive Speech (Final Copy)",
  "Warnings": [],
- "WorkType": "Assessment Task"
+ "WorkType": "Assessment Task includes Self-reflection"
 }
 ---
 
