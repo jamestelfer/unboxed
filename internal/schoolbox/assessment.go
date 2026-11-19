@@ -43,7 +43,7 @@ var (
 	selMark         = cascadia.MustCompile(`[data-test="assessment-feedback-mark"] span`)
 	selComment      = cascadia.MustCompile("blockquote")
 	selFeedbackFile = cascadia.MustCompile("ul.information-list .card.attachment a[href]")
-	selSubmission   = cascadia.MustCompile(`a[href*="/responses/"][href$="/download"]`)
+	selSubmission   = cascadia.MustCompile(`a[data-test="assessment-summary-files-list-file"]`)
 	selRubric       = cascadia.MustCompile("rubric-readonly")
 
 	selLoginForm = cascadia.MustCompile(`form[action*="login"], input[type="password"]`)
@@ -477,9 +477,24 @@ func historyEntry(li *html.Node, loc *time.Location) HistoryEntry {
 	e := HistoryEntry{Kind: HistorySubmission}
 	_, e.By, e.At = byline(li, loc)
 	for _, a := range selSubmission.MatchAll(li) {
-		e.Files = append(e.Files, fileRef(a, FileSubmission))
+		f := fileRef(a, FileSubmission)
+		f.Link = submissionDownload(f.Link)
+		e.Files = append(e.Files, f)
 	}
 	return e
+}
+
+// submissionDownload returns the link that serves a submission's content.
+// Uploaded files link to …/files/N/download, but text typed into the online
+// editor links to …/files/N, a preview page; its content is at the same path
+// with /download appended.
+func submissionDownload(link string) string {
+	u, err := url.Parse(link)
+	if err != nil || strings.HasSuffix(u.Path, "/download") {
+		return link
+	}
+	u.Path += "/download"
+	return u.String()
 }
 
 // byline reads "Feedback by Name", "Resubmission required by Name" or

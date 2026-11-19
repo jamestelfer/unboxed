@@ -78,6 +78,7 @@ func TestAssessmentPages(t *testing.T) {
 		{"assessment_grade.html", 9105, 202},
 		{"assessment_not_submitted.html", 9104, 202},
 		{"assessment_submitted.html", 9103, 202},
+		{"assessment_online_submission.html", 9109, 202},
 		{"assessment_resubmission.html", 9102, 201},
 		{"assessment_rubric_marked.html", 9102, 201},
 	} {
@@ -119,6 +120,38 @@ func TestAssessmentRubricSelection(t *testing.T) {
 	assert.False(t, first[0].Selected)
 	assert.True(t, first[1].Selected)
 	assert.Equal(t, "<p>Above Standard</p>\n", first[1].Level)
+}
+
+func TestAssessmentSubmissionLinks(t *testing.T) {
+	for fixture, want := range map[string]AssessmentFile{
+		"assessment_submitted.html": {
+			Name: "Week 1 & 2 - English Reflection",
+			Kind: FileSubmission,
+			MIME: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			Link: "/learning/assessments/9103/202/responses/7001/files/7101/download",
+		},
+		// Text typed into the online editor links to a preview page; its
+		// content is at the same path with /download appended.
+		"assessment_online_submission.html": {
+			Name: "Online Submission",
+			Kind: FileSubmission,
+			MIME: "text/html",
+			Link: "/learning/assessments/9109/202/responses/7001/files/7101/download",
+		},
+	} {
+		t.Run(fixture, func(t *testing.T) {
+			page, err := fetchAssessment(t, &pageDoer{status: http.StatusOK, fixture: fixture}, 9103, 202)
+
+			require.NoError(t, err)
+			var files []AssessmentFile
+			for _, e := range page.History {
+				if e.Kind == HistorySubmission {
+					files = append(files, e.Files...)
+				}
+			}
+			assert.Equal(t, []AssessmentFile{want}, files)
+		})
+	}
 }
 
 func TestAssessmentUndecodableRubricWarns(t *testing.T) {
