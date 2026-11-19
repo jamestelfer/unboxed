@@ -182,6 +182,87 @@
 }
 ---
 
+[TestAssessmentPages/assessment_online_submission.html - 1]
+{
+ "DescriptionHTML": "",
+ "Due": "2026-01-16T23:59:00+11:00",
+ "Grading": [
+  {
+   "Action": "Feedback",
+   "At": "2026-10-11T23:32:00+11:00",
+   "CommentHTML": "",
+   "Files": [],
+   "Mark": "Submitted",
+   "Teacher": "Mr Chris Hale"
+  }
+ ],
+ "History": [
+  {
+   "Feedback": {
+    "Action": "Feedback",
+    "At": "2026-10-11T23:32:00+11:00",
+    "CommentHTML": "",
+    "Files": [],
+    "Mark": "Submitted",
+    "Teacher": "Mr Chris Hale"
+   },
+   "Kind": "feedback"
+  },
+  {
+   "At": "2026-01-16T15:02:00+11:00",
+   "By": "Sam Parent",
+   "Files": [
+    {
+     "Kind": "submission",
+     "Link": "/learning/assessments/9109/202/responses/7001/files/7101/download",
+     "MIME": "text/html",
+     "Name": "Online Submission",
+     "Size": ""
+    }
+   ],
+   "Kind": "submission"
+  }
+ ],
+ "MarkScheme": {
+  "Bands": [
+   {
+    "caption": "A - Well above",
+    "lowerBound": 90,
+    "rawGrade": 95
+   },
+   {
+    "caption": "B - Above",
+    "lowerBound": 75,
+    "rawGrade": 82
+   },
+   {
+    "caption": "C - At expected level",
+    "lowerBound": 60,
+    "rawGrade": 67
+   },
+   {
+    "caption": "D - Below",
+    "lowerBound": 50,
+    "rawGrade": 55
+   },
+   {
+    "caption": "E - Well below",
+    "lowerBound": 0,
+    "rawGrade": 25
+   }
+  ],
+  "Mode": "letter"
+ },
+ "Rubrics": [],
+ "Subject": "7 English B (7Eng1B,7Eng2B)",
+ "Submissions": "This assessment no longer accepts submissions.",
+ "TaskFiles": [],
+ "Title": "T1 Reflection",
+ "Warnings": [],
+ "WorkType": "Class Work"
+}
+---
+
 [TestAssessmentPages/assessment_percent.html - 1]
 {
  "DescriptionHTML": "<p>Ensure that you hand in the booklet prior to the exam.</p><p>Refer to the rubric on the backpage of the booklet with respect to the breakdown of the marking.</p>",
