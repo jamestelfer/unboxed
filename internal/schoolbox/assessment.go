@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -39,6 +40,7 @@ var (
 	selFeedbackItem = cascadia.MustCompile("ul.reply > li")
 	selHistoryItem  = cascadia.MustCompile("ul.reply > li, ul.threaded > li")
 	selAuthorCard   = cascadia.MustCompile(".list-item > .card:not(.attachment)")
+	selAuthorLink   = cascadia.MustCompile(`a[href^="/search/user/"]`)
 	selCardMeta     = cascadia.MustCompile(".meta")
 	selMark         = cascadia.MustCompile(`[data-test="assessment-feedback-mark"] span`)
 	selComment      = cascadia.MustCompile("blockquote")
@@ -105,20 +107,27 @@ type AssessmentFeedback struct {
 	Files       []AssessmentFile
 }
 
-// HistoryEntry is a feedback entry or a student submission, in page order.
+// HistoryEntry is a feedback entry, a student submission or the student's
+// self-reflection, in page order.
 type HistoryEntry struct {
-	// HistoryFeedback or HistorySubmission.
+	// HistoryFeedback, HistorySubmission or HistorySelfReflection.
 	Kind     string
 	Feedback *AssessmentFeedback `json:",omitempty"`
-	// Submission fields.
+	// Submission and self-reflection fields. A self-reflection byline names
+	// no one, so By is empty for it.
 	By    string           `json:",omitempty"`
 	At    time.Time        `json:",omitzero"`
 	Files []AssessmentFile `json:",omitempty"`
+	// CommentHTML is the self-reflection comment, when the student wrote one.
+	CommentHTML string `json:",omitempty"`
 }
 
 const (
 	HistoryFeedback   = "feedback"
 	HistorySubmission = "submission"
+	// HistorySelfReflection is the student's own reflection on the work,
+	// shown in the same layout as teacher feedback.
+	HistorySelfReflection = "self-reflection"
 )
 
 // MarkScheme is how the assessment is marked: "raw" out of TotalMark,
@@ -246,14 +255,14 @@ func (c *Client) Assessment(ctx context.Context, assessmentID, studentID int, lo
 	if err != nil {
 		return AssessmentPage{}, fmt.Errorf("GET %s: parse: %w", path, err)
 	}
-	page, err := parseAssessment(doc, loc)
+	page, err := parseAssessment(doc, studentID, loc)
 	if err != nil {
 		return AssessmentPage{}, fmt.Errorf("GET %s: %w", path, err)
 	}
 	return page, nil
 }
 
-func parseAssessment(doc *html.Node, loc *time.Location) (AssessmentPage, error) {
+func parseAssessment(doc *html.Node, studentID int, loc *time.Location) (AssessmentPage, error) {
 	content := selContent.MatchFirst(doc)
 	if content == nil || selMeta.MatchFirst(content) == nil {
 		if selLoginForm.MatchFirst(doc) != nil {
@@ -286,7 +295,7 @@ func parseAssessment(doc *html.Node, loc *time.Location) (AssessmentPage, error)
 	}
 	for _, section := range selHistory.MatchAll(content) {
 		for _, li := range selHistoryItem.MatchAll(section) {
-			p.History = append(p.History, historyEntry(li, loc))
+			p.History = append(p.History, historyEntry(li, studentID, loc))
 		}
 	}
 	return p, nil
@@ -394,11 +403,9 @@ func decodeRubrics(raw []byte) ([]Rubric, error) {
 	return out, nil
 }
 
-// rubric maps the marked grid onto the rubric. No captured page had a
-// descriptor selected or a humanReadableMark set, so the mapping (indicator
-// id to descriptorId, descriptors aligned to levels by position) is inferred
-// from field names, and the marked-rubric fixture is hand-edited to match.
-// Check it against a real marked rubric before trusting a wrong-looking grid.
+// rubric maps the marked grid onto the rubric: each marked indicator names its
+// chosen descriptorId, and descriptors align to levels by position. The
+// marked-rubric fixture is an anonymised capture of a real marked grid.
 func (w *rubricWire) rubric() Rubric {
 	selected := map[int]int{}    // indicator id → descriptor id
 	capMarks := map[int]string{} // capability id → mark
@@ -469,8 +476,19 @@ func feedbackEntry(li *html.Node, loc *time.Location) AssessmentFeedback {
 	return f
 }
 
-func historyEntry(li *html.Node, loc *time.Location) HistoryEntry {
+// historyEntry reads one history item. A self-reflection uses the feedback
+// layout and its byline is plain text ("Self-reflection"), so it is told apart
+// by its author: the profile link points at the student, not a teacher.
+func historyEntry(li *html.Node, studentID int, loc *time.Location) HistoryEntry {
 	if selFeedbackItem.Match(li) {
+		if authorID(li) == studentID {
+			e := HistoryEntry{Kind: HistorySelfReflection}
+			_, _, e.At = byline(li, loc)
+			if q := selComment.MatchFirst(li); q != nil {
+				e.CommentHTML = strings.TrimSpace(innerHTML(q))
+			}
+			return e
+		}
 		f := feedbackEntry(li, loc)
 		return HistoryEntry{Kind: HistoryFeedback, Feedback: &f}
 	}
@@ -495,6 +513,23 @@ func submissionDownload(link string) string {
 	}
 	u.Path += "/download"
 	return u.String()
+}
+
+// authorID is the user id in the entry's profile link, or 0 without one.
+func authorID(li *html.Node) int {
+	card := selAuthorCard.MatchFirst(li)
+	if card == nil {
+		return 0
+	}
+	a := selAuthorLink.MatchFirst(card)
+	if a == nil {
+		return 0
+	}
+	id, err := strconv.Atoi(strings.TrimPrefix(attr(a, "href"), "/search/user/"))
+	if err != nil {
+		return 0
+	}
+	return id
 }
 
 // byline reads "Feedback by Name", "Resubmission required by Name" or

@@ -80,7 +80,7 @@ func TestAssessmentPages(t *testing.T) {
 		{"assessment_submitted.html", 9103, 202},
 		{"assessment_online_submission.html", 9109, 202},
 		{"assessment_resubmission.html", 9102, 201},
-		{"assessment_rubric_marked.html", 9102, 201},
+		{"assessment_rubric_marked.html", 9110, 202},
 	} {
 		t.Run(tc.fixture, func(t *testing.T) {
 			d := &pageDoer{status: http.StatusOK, fixture: tc.fixture}
@@ -108,18 +108,40 @@ func TestAssessmentFullPageIgnoresChrome(t *testing.T) {
 }
 
 func TestAssessmentRubricSelection(t *testing.T) {
-	page, err := fetchAssessment(t, &pageDoer{status: http.StatusOK, fixture: "assessment_rubric_marked.html"}, 9102, 201)
+	page, err := fetchAssessment(t, &pageDoer{status: http.StatusOK, fixture: "assessment_rubric_marked.html"}, 9110, 202)
 
 	require.NoError(t, err)
 	require.Len(t, page.Rubrics, 1)
 	r := page.Rubrics[0]
-	assert.Equal(t, "30 / 36", r.Mark)
-	require.NotEmpty(t, r.Criteria)
-	first := r.Criteria[0].Indicators[0].Descriptors
+	assert.Equal(t, "36 / 40", r.Mark)
+	require.Len(t, r.Criteria, 1)
+	indicators := r.Criteria[0].Indicators
+	require.Len(t, indicators, 5)
+	first := indicators[0].Descriptors
 	require.Len(t, first, 5)
 	assert.False(t, first[0].Selected)
 	assert.True(t, first[1].Selected)
-	assert.Equal(t, "<p>Above Standard</p>\n", first[1].Level)
+	assert.Equal(t, "<p>Strong</p>\n", first[1].Level)
+	// An unscored indicator still records which descriptor was chosen.
+	last := indicators[4].Descriptors
+	require.Len(t, last, 5)
+	assert.True(t, last[0].Selected)
+	assert.Nil(t, last[0].Points)
+}
+
+func TestAssessmentSelfReflection(t *testing.T) {
+	page, err := fetchAssessment(t, &pageDoer{status: http.StatusOK, fixture: "assessment_rubric_marked.html"}, 9110, 202)
+
+	require.NoError(t, err)
+	kinds := make([]string, 0, len(page.History))
+	for _, e := range page.History {
+		kinds = append(kinds, e.Kind)
+	}
+	require.Equal(t, []string{HistorySubmission, HistorySelfReflection, HistoryFeedback}, kinds)
+	reflection := page.History[1]
+	assert.Nil(t, reflection.Feedback)
+	assert.Equal(t, time.Date(2026, 9, 11, 11, 35, 0, 0, melbourne), reflection.At)
+	assert.Empty(t, reflection.Files)
 }
 
 func TestAssessmentSubmissionLinks(t *testing.T) {
