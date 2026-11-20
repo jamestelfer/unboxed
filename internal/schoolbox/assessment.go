@@ -76,7 +76,7 @@ const (
 	FileTask       = "task"
 	FileSubmission = "submission"
 	FileAnnotation = "annotation"
-	// FileKami links to the Kami viewer, not a file.
+	// FileKami is a Kami-annotated copy, fetched as a PDF export.
 	FileKami = "kami"
 )
 
@@ -91,9 +91,6 @@ type AssessmentFile struct {
 	// Site-relative link.
 	Link string
 }
-
-// Retrievable reports whether Link is a file rather than a viewer page.
-func (f AssessmentFile) Retrievable() bool { return f.Kind != FileKami }
 
 // AssessmentFeedback is one teacher feedback entry.
 type AssessmentFeedback struct {
@@ -467,11 +464,11 @@ func feedbackEntry(li *html.Node, loc *time.Location) AssessmentFeedback {
 		f.CommentHTML = strings.TrimSpace(innerHTML(q))
 	}
 	for _, a := range selFeedbackFile.MatchAll(li) {
-		kind := FileAnnotation
 		if strings.HasPrefix(attr(a, "href"), "/learning/kami/") {
-			kind = FileKami
+			f.Files = append(f.Files, kamiRef(a))
+			continue
 		}
-		f.Files = append(f.Files, fileRef(a, kind))
+		f.Files = append(f.Files, fileRef(a, FileAnnotation))
 	}
 	return f
 }
@@ -565,6 +562,18 @@ func fileRef(a *html.Node, kind string) AssessmentFile {
 	if img := selMimeIcon.MatchFirst(a); img != nil {
 		f.MIME = strings.TrimPrefix(attr(img, "src"), "/ajax/mime/")
 	}
+	return f
+}
+
+// kamiRef points a Kami card at its export, which answers a plain GET with
+// the annotated document as a PDF. The card's icon and title describe the
+// original upload, and the export is served as application/octet-stream, so
+// the MIME type and ".pdf" suffix are set here.
+func kamiRef(a *html.Node) AssessmentFile {
+	f := fileRef(a, FileKami)
+	f.Link = strings.TrimSuffix(f.Link, "/") + "/export"
+	f.Name += ".pdf"
+	f.MIME = "application/pdf"
 	return f
 }
 

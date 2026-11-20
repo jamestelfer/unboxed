@@ -33,6 +33,7 @@ const (
 	resubmissionPath = "/learning/assessments/9102/201"
 	taskFileKey      = "/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx"
 	submissionKey    = "/learning/assessments/9102/201/responses/7002/files/7102/download"
+	kamiExportKey    = "/learning/kami/7201/export"
 )
 
 func callAssessment(t *testing.T, s *mcp.ClientSession, args map[string]any) *mcp.CallToolResult {
@@ -118,14 +119,17 @@ func TestGetAssessmentReturnsResourceLinks(t *testing.T) {
 		require.True(t, ok, "content is %T", c)
 		links = append(links, link)
 	}
-	require.Len(t, links, 2, "task file and submission; the Kami link is not a file")
+	require.Len(t, links, 3, "task file, submission and Kami export")
 	assert.Equal(t, "https://school.example"+taskFileKey, links[0].URI)
 	assert.Equal(t, "Hike Student Planning Assignment.docx", links[0].Name)
 	assert.Equal(t, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", links[0].MIMEType)
 	require.NotNil(t, links[0].Size)
 	assert.Equal(t, int64(488233), *links[0].Size)
-	assert.Equal(t, "https://school.example"+submissionKey, links[1].URI)
-	assert.Nil(t, links[1].Size)
+	assert.Equal(t, "https://school.example"+kamiExportKey, links[1].URI)
+	assert.Equal(t, "hike_plan_alex.pdf", links[1].Name)
+	assert.Equal(t, "application/pdf", links[1].MIMEType)
+	assert.Equal(t, "https://school.example"+submissionKey, links[2].URI)
+	assert.Nil(t, links[2].Size)
 }
 
 func TestGetAssessmentRequiresLinkedStudent(t *testing.T) {
@@ -225,6 +229,7 @@ func withAssessmentFiles(t *testing.T) (*mcp.ClientSession, *fixtures) {
 		},
 		taskFileKey:   file("application/octet-stream", "PK-task"),
 		submissionKey: file("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "PK-submission"),
+		kamiExportKey: file("application/octet-stream", "%PDF-kami"),
 	}
 	return s, fx
 }
@@ -265,16 +270,26 @@ func TestGetAssessmentFileOnlyFetchesListedFiles(t *testing.T) {
 
 	msg := call(t, s, "get_assessment_file", map[string]any{"student_id": 201, "assessment_id": 9102, "name": "secret.docx"}, nil)
 
-	assert.Contains(t, msg, `choose one of: "Hike Student Planning Assignment.docx", "hike_plan_alex"`)
+	assert.Contains(t, msg, `choose one of: "Hike Student Planning Assignment.docx", "Annotated plan.pdf", "hike_plan_alex"`)
 	assert.Equal(t, resubmissionPath, fx.lastRequest(), "no download for an unlisted name")
 }
 
-func TestGetAssessmentFileRefusesKami(t *testing.T) {
-	// The Kami annotation is renamed so it does not share the submission's name.
-	s, fx := connect(t, map[string]string{resubmissionPath: "assessment_kami.html"})
+func TestGetAssessmentFileDownloadsKamiExport(t *testing.T) {
+	s, fx := withAssessmentFiles(t)
 
-	msg := call(t, s, "get_assessment_file", map[string]any{"student_id": 201, "assessment_id": 9102, "name": "Annotated plan"}, nil)
+	res, err := s.CallTool(t.Context(), &mcp.CallToolParams{
+		Name:      "get_assessment_file",
+		Arguments: map[string]any{"student_id": 201, "assessment_id": 9102, "name": "Annotated plan.pdf"},
+	})
 
-	assert.Contains(t, msg, `"Annotated plan" is a Kami annotation, which opens only in Schoolbox: https://school.example/learning/kami/7201`)
-	assert.Equal(t, resubmissionPath, fx.lastRequest())
+	require.NoError(t, err)
+	require.False(t, res.IsError, "%+v", res.Content)
+	require.Len(t, res.Content, 2)
+	embedded, ok := res.Content[1].(*mcp.EmbeddedResource)
+	require.True(t, ok, "content is %T", res.Content[1])
+	// The export is served as octet-stream; the listed type wins.
+	assert.Equal(t, "application/pdf", embedded.Resource.MIMEType)
+	assert.Equal(t, "https://school.example"+kamiExportKey, embedded.Resource.URI)
+	assert.Equal(t, []byte("%PDF-kami"), embedded.Resource.Blob)
+	assert.Equal(t, kamiExportKey, fx.lastRequest())
 }

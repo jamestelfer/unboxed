@@ -154,7 +154,6 @@
    "kind": "task",
    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
    "name": "Week 5 - Social Issues.docx",
-   "retrievable": true,
    "size": "106.14 KB",
    "url": "https://school.example/storage/fetch.php?hash=9d0f93789ca035b17a3b028dfa384fa3026e9e90&name=Week%205%20-%20Social%20Issues.docx"
   }
@@ -214,10 +213,9 @@
    "files": [
     {
      "kind": "kami",
-     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "name": "hike_plan_alex",
-     "retrievable": false,
-     "url": "https://school.example/learning/kami/7201"
+     "mime": "application/pdf",
+     "name": "hike_plan_alex.pdf",
+     "url": "https://school.example/learning/kami/7201/export"
     }
    ],
    "teacher": "Mr Dana Marsh"
@@ -232,7 +230,6 @@
      "kind": "submission",
      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
      "name": "hike_plan_alex",
-     "retrievable": true,
      "url": "https://school.example/learning/assessments/9102/201/responses/7002/files/7102/download"
     }
    ],
@@ -246,10 +243,9 @@
    "files": [
     {
      "kind": "kami",
-     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "name": "hike_plan_alex",
-     "retrievable": false,
-     "url": "https://school.example/learning/kami/7201"
+     "mime": "application/pdf",
+     "name": "hike_plan_alex.pdf",
+     "url": "https://school.example/learning/kami/7201/export"
     }
    ],
    "kind": "feedback"
@@ -496,7 +492,6 @@
    "kind": "task",
    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
    "name": "Hike Student Planning Assignment.docx",
-   "retrievable": true,
    "size": "476.79 KB",
    "url": "https://school.example/storage/fetch.php?hash=f85f28b4ce237162b78d19fc94cfe9e5abc37e7a&name=Hike%20Student%20Planning%20Assignment.docx"
   }
@@ -529,7 +524,6 @@
      "kind": "submission",
      "mime": "text/html",
      "name": "Online Submission",
-     "retrievable": true,
      "url": "https://school.example/learning/assessments/9110/202/responses/7003/files/7103/download"
     }
    ],
@@ -763,7 +757,6 @@
      "kind": "submission",
      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
      "name": "Week 1 & 2 - English Reflection",
-     "retrievable": true,
      "url": "https://school.example/learning/assessments/9103/202/responses/7001/files/7101/download"
     }
    ],
@@ -829,7 +822,6 @@
    "kind": "task",
    "mime": "text/csv",
    "name": "Self-Assessment-Rubric-3-EXC-Schoolbox.csv",
-   "retrievable": true,
    "size": "940 B",
    "url": "https://school.example/storage/fetch.php?hash=c328eb70504ad488a8e2695c3d3db05ba8e712de&name=Self-Assessment-Rubric-3-EXC-Schoolbox.csv"
   }

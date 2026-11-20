@@ -315,9 +315,9 @@
    "Files": [
     {
      "Kind": "kami",
-     "Link": "/learning/kami/7201",
-     "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-     "Name": "hike_plan_alex",
+     "Link": "/learning/kami/7201/export",
+     "MIME": "application/pdf",
+     "Name": "hike_plan_alex.pdf",
      "Size": ""
     }
    ],
@@ -348,9 +348,9 @@
     "Files": [
      {
       "Kind": "kami",
-      "Link": "/learning/kami/7201",
-      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "Name": "hike_plan_alex",
+      "Link": "/learning/kami/7201/export",
+      "MIME": "application/pdf",
+      "Name": "hike_plan_alex.pdf",
       "Size": ""
      }
     ],

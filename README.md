@@ -58,7 +58,7 @@ Date ranges for the calendar, due work and awaiting feedback are capped at 31 da
 
 `list_awaiting_feedback` cannot tell whether work was submitted. Schoolbox's calendar `completed` flag stays false even for marked work, so the tool relies on the absence of feedback instead.
 
-`get_assessment` returns each file's Schoolbox URL, which opens in a browser signed in to Schoolbox, and an MCP resource link for clients that render them. Kami annotations are viewer pages, so they open only in Schoolbox.
+`get_assessment` returns each file's Schoolbox URL, which opens in a browser signed in to Schoolbox, and an MCP resource link for clients that render them. Kami-annotated files download as PDFs, with teacher marks as `/Stamp` annotations.
 
 `grade_stats` separates completion statuses such as "Submitted" from numeric marks. Schoolbox reports descriptor grades (for example "C") as fixed stand-in percentages, so these are flagged rather than averaged as genuine marks.
 

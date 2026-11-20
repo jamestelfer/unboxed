@@ -143,7 +143,8 @@ func New(cfg Config) (*mcp.Server, error) {
 		Name: "get_assessment_file",
 		Description: "Download a file listed by get_assessment: a task sheet, a student submission or an annotated " +
 			"feedback file. Images return as image content, text as text, and other files (PDF, Word) as an " +
-			"embedded resource. Kami annotations open only in Schoolbox. Files over 10 MB are refused.",
+			"embedded resource. Kami-annotated files return as PDFs; teacher comments and pen marks may be in " +
+			"their /Stamp annotations. Files over 10 MB are refused.",
 		Annotations: readOnly,
 	}, s.getAssessmentFile)
 	return srv, nil
