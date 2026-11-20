@@ -56,13 +56,11 @@ type FileRef struct {
 	Name string `json:"name"`
 	// task, submission, annotation or kami.
 	Kind string `json:"kind"`
-	// Size as the page shows it ("476.79 KB"); empty for submissions and Kami links.
+	// Size as the page shows it ("476.79 KB"); empty for submissions and Kami files.
 	Size string `json:"size,omitempty"`
 	MIME string `json:"mime,omitempty"`
 	// Absolute URL for direct download in a browser signed in to Schoolbox.
 	URL string `json:"url"`
-	// False for Kami links, which are viewer pages rather than files.
-	Retrievable bool `json:"retrievable"`
 }
 
 type MarkScheme struct {
@@ -129,12 +127,9 @@ func (s *service) getAssessment(ctx context.Context, _ *mcp.CallToolRequest, a a
 		return nil, assessmentOut{}, fmt.Errorf("encode assessment: %w", err)
 	}
 	// Setting Content suppresses the SDK's default JSON text block, so it is
-	// written here, followed by a link per retrievable file.
+	// written here, followed by a link per file.
 	content := []mcp.Content{&mcp.TextContent{Text: string(text)}}
 	for _, f := range s.files(pageFiles(&page)) {
-		if !f.Retrievable {
-			continue
-		}
 		content = append(content, &mcp.ResourceLink{URI: f.URL, Name: f.Name, MIMEType: f.MIME, Size: parseSize(f.Size)})
 	}
 	return &mcp.CallToolResult{Content: content}, out, nil
@@ -248,7 +243,7 @@ func (s *service) files(files []schoolbox.AssessmentFile) []FileRef {
 	for _, f := range files {
 		out = append(out, FileRef{
 			Name: f.Name, Kind: f.Kind, Size: f.Size, MIME: f.MIME,
-			URL: s.link(f.Link), Retrievable: f.Retrievable(),
+			URL: s.link(f.Link),
 		})
 	}
 	return out
@@ -321,20 +316,12 @@ func (s *service) getAssessmentFile(ctx context.Context, _ *mcp.CallToolRequest,
 	var file *schoolbox.AssessmentFile
 	names := make([]string, 0, len(files))
 	for i := range files {
-		if !files[i].Retrievable() {
-			continue
-		}
 		names = append(names, fmt.Sprintf("%q", files[i].Name))
 		if files[i].Name == a.Name && file == nil {
 			file = &files[i]
 		}
 	}
 	if file == nil {
-		for _, f := range files {
-			if f.Name == a.Name {
-				return nil, nil, fmt.Errorf("%q is a Kami annotation, which opens only in Schoolbox: %s", f.Name, s.link(f.Link))
-			}
-		}
 		if len(names) == 0 {
 			return nil, nil, fmt.Errorf("assessment %d has no files", a.AssessmentID)
 		}
